@@ -16,6 +16,7 @@ PREREQUISITES
   * UnitTest++ (a.k.a. unittest-cpp) (optional)
 
 INTRODUCTION
+
     Brzdm is a graphical display/login manager for X11. It aims
     to be simple, fast and independent from the various desktop
     environments. Text and image display is handled by Imlib2.
@@ -41,6 +42,7 @@ INTRODUCTION
     - Kiosk support
 
 USAGE
+
     To launch brzdm, execute the brzdm binary, Use the -d option
     if you want it to run as a daemon in the background.
 
@@ -62,6 +64,7 @@ USAGE
     ImageMagick/GraphicsMagik 'import' program is available.
 
 THEMES
+
     See THEMES
 
 BUILDING
@@ -74,10 +77,12 @@ BUILDING
  NOTE: Please do not delete the top-level Makefile.
 
 INSTALLATION
+
  Once the project has been built (see "BUILDING"), execute "sudo make install".
  then, see the INSTALL file
 
 COPYRIGHT
+
     Brzdm is copyright (c) 2015 Tsert.Com <dev@breezeos.com>
 
     Slim is copyright (c) 2004-06 by Simone Rota, Johannes Winkelmann,
