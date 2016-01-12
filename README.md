@@ -33,6 +33,7 @@ INTRODUCTION
     - Secure auto-login support
     - User Photo Panel support
     - Time Clock Panel support
+    - Command associated buttons
     - CMake build procedure
 
     Planned Features:
