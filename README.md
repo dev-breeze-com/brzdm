@@ -1,8 +1,6 @@
 # brzdm
 Brzdm is a graphical display/login manager for X11, using Imlib2
 
-PREREQUISITES
-
  This project requires:
   * Cross-platform Make (CMake) v2.8.2+
   * GNU Make or equivalent.
