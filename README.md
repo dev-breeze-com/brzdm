@@ -62,6 +62,7 @@ USAGE
     Pressing the F11 key executes a user-specified command, see the
     configuration file; the default is to take a screenshot if the
     ImageMagick/GraphicsMagik 'import' program is available.
+    Most error messages are handled by the system's syslog.
 
 THEMES
 
