@@ -1,8 +1,6 @@
 # brzdm
 Brzdm is a graphical display/login manager for X11, using Imlib2
 
-README file for Brzdm
-
 PREREQUISITES
 
  This project requires:
