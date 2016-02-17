@@ -10,8 +10,6 @@ Brzdm is a graphical display/login manager for X11, using Imlib2
   * Nettle encryption library
   * Freetype font library
   * Keyutils keyring library
-  * Log4Cxx v0.10.0+ (optional)
-  * UnitTest++ (a.k.a. unittest-cpp) (optional)
 
 INTRODUCTION
 
@@ -27,7 +25,6 @@ INTRODUCTION
     - PNG support with alpha transparency
     - PNG / JPEG support for backgrounds
     - XFT / freetype support
-    - Double or single (GDM-style) inputbox support
     - Keyutils authentication support
     - Secure auto-login support
     - User Photo Panel support
@@ -54,7 +51,6 @@ USAGE
     - F6/reboot: reboot the system
     - F7/suspend: suspend the system (unsafe)
     - F8/kiosk: invoke the kiosk app
-    - F9/console: start console login (optional)
     - ESC/exit: exit Brzdm
 
     Pressing the F11 key executes a user-specified command, see the
