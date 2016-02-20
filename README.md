@@ -4,12 +4,12 @@ Brzdm is a graphical display/login manager for X11, using Imlib2
  This project requires:
   * Cross-platform Make (CMake) v2.8.2+
   * GNU Make or equivalent.
-  * GCC or an alternative, reasonably conformant C++ compiler.
+  * GCC or an alternative, conformant C++ compiler.
   * Xorg/X11 libraries
   * Imlib2 image library
   * Nettle encryption library
   * Freetype font library
-  * Keyutils keyring library
+  * Keyutils keyring library (upcoming versions)
 
 INTRODUCTION
 
@@ -21,18 +21,18 @@ INTRODUCTION
     which was based on the latest release of Login.app by Per Lidén.
 
     Features:
-    - External themes and INI-style configuration
+    - Themes with INI-like configuration
     - PNG support with alpha transparency
     - PNG / JPEG support for backgrounds
-    - XFT / freetype support
-    - Keyutils authentication support
-    - Secure auto-login support
-    - User Photo Panel support
-    - Time Clock Panel support
+    - XFT / FreeType font support
+    - Double or single inputbox support
+    - Clock panel support
     - Command associated buttons
     - CMake build procedure
 
     Planned Features:
+    - Secure auto-login support
+    - Photo panel support
     - Wayland support
     - Kiosk support
 
@@ -50,13 +50,11 @@ USAGE
     - F5/halt: halt the system
     - F6/reboot: reboot the system
     - F7/suspend: suspend the system (unsafe)
-    - F8/kiosk: invoke the kiosk app
-    - ESC/exit: exit Brzdm
 
     Pressing the F11 key executes a user-specified command, see the
     configuration file; the default is to take a screenshot if the
     ImageMagick/GraphicsMagik 'import' program is available.
-    Most error messages are handled by the system's syslog.
+    Most error messages are sent to the system's syslog.
 
 THEMES
 
