@@ -62,17 +62,17 @@ THEMES
 
 BUILDING
 
- This project uses the Cross-platform Make (CMake) build system. However, a
- conveniently wrapped configure script and Makefile are also provided, so that
- the typical build invocation of "./configure" followed by "make" will work.
- For a list of all possible build targets, use the command "make help".
+   This project uses the Cross-platform Make (CMake) build system. However, a
+   conveniently wrapped configure script and Makefile are also provided, so that
+   the typical build invocation of "./configure" followed by "make" will work.
+   For a list of all possible build targets, use the command "make help".
 
- NOTE: Please do not delete the top-level Makefile.
+   NOTE: Please do not delete the top-level Makefile.
 
 INSTALLATION
 
- Once the project has been built (see "BUILDING"), execute "sudo make install".
- then, see the INSTALL file
+   Once the project has been built (see "BUILDING"), execute "sudo make install".
+   then, see the INSTALL file
 
 COPYRIGHT
 
