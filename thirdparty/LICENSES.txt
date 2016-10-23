@@ -1,0 +1,22 @@
+== LICENSES ==
+
+ * Software Name: imlib2
+   ** License Name: Imlib2 License
+   ** License File: licenses/Imlib2.txt
+
+ * Software Name: freetype2
+   ** License Name: GPL License
+   ** License File: licenses/GPL-2.0.txt
+
+ * Software Name: consolekit2
+   ** License Name: Lesser GPL License
+   ** License File: licenses/LGPL-2.0.txt
+
+ * Software Name: nettle
+   ** License Name: Lesser GPL License
+   ** License File: licenses/LGPL-2.1.txt
+
+ * Software Name: fontconfig
+   ** License Name: BSD License
+   ** License File: licenses/Fontconfig.txt
+

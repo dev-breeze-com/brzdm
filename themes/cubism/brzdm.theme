@@ -1,0 +1,240 @@
+[Theme]
+
+# Reserved button names are:
+# Snapshot,
+# Login, Kiosk,
+# Shutdown, Reboot, Suspend,
+# Prev, Next
+#
+[Snapshot]
+type=button
+keystroke=F11
+button=snapshot.png
+command=import -display :0.0 -window root /var/run/brzdm.jpg
+message=Snapshot taken ...
+coord-x=50
+coord-y=100
+[/Snapshot]
+
+# When kiosk mode is enabled, all other commands are automatically disabled.
+#[Kiosk]
+#type=button
+#keystroke=F4
+#button=kiosk.png
+#command=/usr/bin/kiosk -u kiosk
+#message=Starting kiosk...
+#coord-x=100
+#coord-y=100
+#[/Kiosk]
+
+[Reboot]
+type=button
+keystroke=F6
+button=restart.png
+command=/sbin/shutdown -r -t 5 now
+message=The system is rebooting...
+coord-x=50
+coord-y=97%
+opacity=70%
+[/Reboot]
+
+[Shutdown]
+type=button
+keystroke=F5
+button=shutdown.png
+command=/sbin/shutdown -h -t 5 now
+message=The system is halting...
+coord-x=100
+coord-y=97%
+opacity=70%
+[/Shutdown]
+
+#[Suspend]
+#type=button
+#keystroke=F7
+#button=suspend.png
+#command=/usr/sbin/suspend
+#message=Putting the system in suspend mode ...
+#coord-x=150
+#coord-y=97%
+#opacity=70%
+#[/Suspend]
+
+[Prev]
+type=button
+button=prev.png
+coord-x=100%-175
+coord-y=97%
+opacity=70%
+[/Prev]
+
+[Login]
+type=button
+button=login.png
+keystroke=F2
+coord-x=100%-125
+coord-y=97%
+[/Login]
+
+[Next]
+type=button
+button=next.png
+coord-x=100%-75
+coord-y=97%
+opacity=70%
+[/Next]
+
+///////////////////////////////////// PANELS //////////////////////////////////
+
+# Reserved panel names are:
+# Background, HostPanel, 
+# LoginPanel, InputPanel, InputMesg,
+# UsernamePanel, UsernameMesg,
+# PasswordPanel, PasswordMesg,
+# SessionPanel, MesgPanel,
+# ErrorPanel, WarningPanel
+# PhotoPanel, ClockPanel,
+#
+[Fonts]
+paths=/usr/share/fonts/TTF/:/usr/share/fonts/truetype/freefont/:/usr/share/fonts/truetype/ttf-dejavu/:/usr/share/fonts/truetype/ttf-liberation/:/usr/share/fonts/75dpi/:/usr/share/fonts/100dpi/
+[/Fonts]
+
+[Background]
+type=panel
+style=scale
+background=background.jpg
+[/Background]
+
+[LoginPanel]
+type=panel
+background=panel.png
+
+#text=Login:
+#text-shadow=yes
+#Must match the font filename without the suffix
+#font-name=DejaVuSans-BoldOblique
+#font-color=#FFFFFFFF
+#font-size=128
+coord-x=2.5%
+coord-y=60%
+
+width=525
+height=225
+[/LoginPanel]
+
+[Message]
+username=Enter your username:
+password=Enter your password:
+[/Message]
+
+[InputPanel]
+type=panel
+bgcolor=#DDDDDD
+parent=LoginPanel
+#position=bottom-right
+font-name=DejaVuSans
+font-color=#000000
+font-size=14
+width=200
+height=30
+coord-x=100%-200
+coord-y=100%-50
+alignment=left
+[/InputPanel]
+
+[InputMesg]
+type=panel
+parent=LoginPanel
+bgcolor=#00AAAAAA
+font-name=DejaVuSans
+font-color=#FFFFFF
+font-size=14
+width=200
+height=30
+coord-x=100%-405
+coord-y=100%-50
+[/InputMesg]
+
+[MesgPanel]
+type=panel
+bgcolor=#00AAAAAA
+font-name=FreeSans
+font-color=#FFFFFF
+font-size=16
+height=30
+width=40%
+coord-x=-1
+coord-y=15%
+ondemand=yes
+[/MesgPanel]
+
+[WarningPanel]
+type=panel
+bgcolor=#00AAAAAA
+font-name=FreeSans
+font-color=#FFFF00
+font-size=16
+height=30
+width=40%
+coord-x=-1
+coord-y=15%
+ondemand=yes
+[/WarningPanel]
+
+[ErrorPanel]
+type=panel
+bgcolor=#00AAAAAA
+font-name=FreeSans
+font-color=#FF0000
+font-size=16
+height=30
+width=40%
+coord-x=-1
+coord-y=15%
+ondemand=yes
+[/ErrorPanel]
+
+[SessionPanel]
+type=panel
+text=Session: %session
+bgcolor=#00AAAAAA
+font-name=FreeSansOblique
+font-color=#FFFFFF
+font-size=16
+height=30
+width=40%
+coord-x=-1
+coord-y=92%
+ondemand=yes
+[/SessionPanel]
+
+[ClockPanel]
+# Use strftime format
+#format=%A, %d %B, %Y %H:%M
+type=panel
+bgcolor=00AAAAAA
+font-name=FreeSansOblique
+font-color=#EEEEEE
+font-size=10
+coord-x=100%-275
+coord-y=50
+width=250
+height=20
+ondemand=yes
+[/ClockPanel]
+
+#[PhotoPanel]
+## The source of photo for users.
+## Password -- retrieve path from GECOS entries
+## Path -- retrieve as /usr/share/brzdm/photo/%user.jpg
+#type=panel
+#photo=Password
+#background=photo.png
+#coord-x=90%
+#coord-y=10
+#halign=right
+#border=solid 1px #EEEEEE
+#shadow=yes
+#[/PhotoPanel]
+
+[/Theme]

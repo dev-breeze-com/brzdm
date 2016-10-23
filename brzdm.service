@@ -1,0 +1,9 @@
+[Unit]
+Description=Brzdm Breeze::OS Display Manager
+After=systemd-user-sessions.service
+
+[Service]
+ExecStart=/usr/bin/brzdm --nodaemon
+
+[Install]
+Alias=display-manager.service

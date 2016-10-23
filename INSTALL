@@ -1,0 +1,27 @@
+INSTALL file for Brzdm
+
+1. Prerequisites:
+ - cmake
+ - X.org or XFree86
+ - libxmu
+ - libpng
+ - libjpeg
+ - imlib2
+ - nettle (upcoming version)
+ - keyutils (upcoming version)
+ - consolekit2
+
+2. Defines:
+ - setenv ARCH and MARCH of your computer, if not i486.
+ - USE_CONSOLEKIT to enable CONSOLEKIT support.
+ - USE_BRZDM_UID to enable brzdm uid support.
+ - USE_KEYUTILS to enable keyring support.
+
+3. to build and install the program:
+ - edit the Makefile to adjust libraries and paths to your OS (if needed)
+ - mkdir build ; cd build ; cmake ${optional-defines} ..
+ - make && make install
+ 
+4. automatic startup
+ - Edit the init scripts according to your OS/Distribution.
+

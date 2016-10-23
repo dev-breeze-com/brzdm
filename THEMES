@@ -1,0 +1,20 @@
+THEME
+
+Read this file if you plan to create a theme (see brzdm.theme).
+
+Some basic information regarding the brzdm theme format follows:
+
+Imlib2 is used for image and text display.
+
+A Brzdm theme essentially consists of:
+  1. a set of panels with:
+  	- a background image (PNG or JPEG) or specification,
+  	- an optional text message with font settings,
+  	- their placement and properties (see brzdm.theme)
+
+  2. a set of buttons with:
+   	- a background image (PNG or JPEG),
+  	- an associated command and keystroke,
+  	- their placement and properties (see brzdm.theme)
+
+All images are alpha-blended into the main background image.

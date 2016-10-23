@@ -1,0 +1,131 @@
+.TH brzdm 1 "Dec 17, 2015" "" ""
+.SH NAME
+\fBbrzdm \fP- Breeze::OS Login/Display Manager
+\fB
+.SH SYNOPSIS
+.nf
+.fam C
+\fBbrzdm\fP [\fIoptions\fP]
+.fam T
+.fi
+.SH DESCRIPTION
+Brzdm is a lightweight login/display manager for X11, derived from \fIslim\fP,
+which allows the invocation of a graphical session secured by username and
+password entries, as well as, optional secure key and signature verification.
+Brzdm selects desktop sessions using \fI/usr/share/xsessions\fP, \fI/etc/X11/xinit/xinitrc.*\fP, and the \fIsessions\fP entry in the config file \fB/etc/brzdm.conf\fP.
+.SH OPTIONS
+.TP
+
+.B
+\fB-d\fP
+Run as a daemon.
+.TP
+
+.B
+\fB-n\fP
+Run in no daemon mode.
+.TP
+
+.B
+\fB-N\fP
+Run without restart (useful when invoked in runlevel 4).
+.TP
+
+.B
+\fB-D <display>\fP
+Use specified display name.
+.TP
+
+.B
+\fB-c <config>\fP
+Use specified config file.
+.TP
+
+.B
+\fB-s\fP
+Run in secure mode, using keyutils on Linux.
+.TP
+
+.B
+\fB-h\fP
+Display a brief help message
+.TP
+
+.B
+\fB-v\fP
+Display version information
+
+.SH STARTING BRZDM AT BOOT
+Please refer to your Operating System documentation, to make \fBbrzdm\fP
+automatically startup after the system boots.
+For installations with \fBbrzctl\fP as the \fBrc.d or init.d service manager\fP; issue the following commands:
+.IP
+brzctl enable displaymgr brzdm
+.IP
+brzctl set displaymgr desktop <xfce, mate, kde, etc.>
+.IP
+brzctl start displaymgr
+.IP
+.PP
+For installations with \fBopenrc\fP as the \fBinit.d service manager\fP; issue the following commands:
+.IP
+rc-update xdm brzdm
+.IP
+rc-update start xdm
+.IP
+
+.SH CONFIGURATION
+Configuration is stored in the /etc/brzdm.conf file. For a detailed explanation
+of each option, see the comments inside the file.
+.SH USAGE
+When started, enter your username and password in the input window;
+.PP
+Special usernames:
+.TP
+.B
+ESC -- exit
+exit \fBbrzdm\fP and return to tty console mode.
+.TP
+.B
+F5 -- halt
+Shutdown your computer.
+.TP
+.B
+F6 -- reboot
+Reboot your computer.
+.TP
+.B
+F7 -- suspend
+Power-suspend your computer,
+(unsafe, unless your computer is properly configured)
+.TP
+.B
+F8 -- console
+Open an xterm console.
+.PP
+See the config file for customizing the 'halt', 'reboot', and 'suspend' commands, as they require the \fBroot\fP password.
+.PP
+Shortcuts:
+.TP
+.B
+F11
+executes a custom command (by default takes a screenshot)  
+.TP
+.B
+F2
+Login securely with credentials stored on USB key (see /etc/brzdm.conf).
+.TP
+.B
+F1
+choose session type (xfce, mate, kde, etc.)
+
+.SH "AUTHOR"
+.PP
+brzdm was written by Pierre Innocent <dev\@breezeos.com>
+.PP
+.PP
+brzdm is released under the \fBGPL-3\fP License version 3.0
+.PP
+.PP
+To report a problem, please email \fBbugs\@breezeos.com\fP
+.PP

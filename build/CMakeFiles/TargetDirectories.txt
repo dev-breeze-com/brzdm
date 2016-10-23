@@ -1,0 +1,4 @@
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/src/CMakeFiles/brzdm.dir
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/docs.dir
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/documentation.dir
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/doxygen.dir

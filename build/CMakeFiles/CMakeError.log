@@ -1,0 +1,376 @@
+Determining if files acl/libacl.h;ctype.h;copyfile.h exist failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3636854316/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3636854316.dir/build.make CMakeFiles/cmTryCompileExec3636854316.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3636854316.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3636854316.dir/CheckIncludeFiles.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c:4:22: fatal error: copyfile.h: No such file or directory
+ #include <copyfile.h>
+                      ^
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTryCompileExec3636854316.dir/CheckIncludeFiles.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec3636854316/fast] Error 2
+
+Source:
+/* */
+#include <acl/libacl.h>
+#include <ctype.h>
+#include <copyfile.h>
+
+
+int main(){return 0;}
+
+Determining if files acl/libacl.h;ctype.h;direct.h exist failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3535203509/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3535203509.dir/build.make CMakeFiles/cmTryCompileExec3535203509.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3535203509.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3535203509.dir/CheckIncludeFiles.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c:4:20: fatal error: direct.h: No such file or directory
+ #include <direct.h>
+                    ^
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTryCompileExec3535203509.dir/CheckIncludeFiles.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec3535203509/fast] Error 2
+
+Source:
+/* */
+#include <acl/libacl.h>
+#include <ctype.h>
+#include <direct.h>
+
+
+int main(){return 0;}
+
+Determining if files acl/libacl.h;ctype.h;dlfcn.h;errno.h;fcntl.h;grp.h;inttypes.h;io.h exist failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2572087315/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2572087315.dir/build.make CMakeFiles/cmTryCompileExec2572087315.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2572087315.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec2572087315.dir/CheckIncludeFiles.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c:9:16: fatal error: io.h: No such file or directory
+ #include <io.h>
+                ^
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTryCompileExec2572087315.dir/CheckIncludeFiles.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec2572087315/fast] Error 2
+
+Source:
+/* */
+#include <acl/libacl.h>
+#include <ctype.h>
+#include <dlfcn.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <grp.h>
+#include <inttypes.h>
+#include <io.h>
+
+
+int main(){return 0;}
+
+Determining if files acl/libacl.h;ctype.h;dlfcn.h;errno.h;fcntl.h;grp.h;inttypes.h;langinfo.h;limits.h;locale.h;memory.h;paths.h;poll.h;process.h exist failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2094846337/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2094846337.dir/build.make CMakeFiles/cmTryCompileExec2094846337.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2094846337.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec2094846337.dir/CheckIncludeFiles.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c:15:21: fatal error: process.h: No such file or directory
+ #include <process.h>
+                     ^
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTryCompileExec2094846337.dir/CheckIncludeFiles.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec2094846337/fast] Error 2
+
+Source:
+/* */
+#include <acl/libacl.h>
+#include <ctype.h>
+#include <dlfcn.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <grp.h>
+#include <inttypes.h>
+#include <langinfo.h>
+#include <limits.h>
+#include <locale.h>
+#include <memory.h>
+#include <paths.h>
+#include <poll.h>
+#include <process.h>
+
+
+int main(){return 0;}
+
+Determining if files acl/libacl.h;ctype.h;dlfcn.h;errno.h;fcntl.h;grp.h;inttypes.h;langinfo.h;limits.h;locale.h;memory.h;paths.h;poll.h;pthread.h;pwd.h;regex.h;signal.h;spawn.h;stdarg.h;stdint.h;stdlib.h;string.h;strings.h;sys/acl.h;sys/cdefs.h;sys/ioctl.h;sys/mkdev.h exist failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3289928878/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3289928878.dir/build.make CMakeFiles/cmTryCompileExec3289928878.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3289928878.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3289928878.dir/CheckIncludeFiles.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c:28:23: fatal error: sys/mkdev.h: No such file or directory
+ #include <sys/mkdev.h>
+                       ^
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTryCompileExec3289928878.dir/CheckIncludeFiles.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec3289928878/fast] Error 2
+
+Source:
+/* */
+#include <acl/libacl.h>
+#include <ctype.h>
+#include <dlfcn.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <grp.h>
+#include <inttypes.h>
+#include <langinfo.h>
+#include <limits.h>
+#include <locale.h>
+#include <memory.h>
+#include <paths.h>
+#include <poll.h>
+#include <pthread.h>
+#include <pwd.h>
+#include <regex.h>
+#include <signal.h>
+#include <spawn.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/acl.h>
+#include <sys/cdefs.h>
+#include <sys/ioctl.h>
+#include <sys/mkdev.h>
+
+
+int main(){return 0;}
+
+Determining if files acl/libacl.h;ctype.h;dlfcn.h;errno.h;fcntl.h;grp.h;inttypes.h;langinfo.h;limits.h;locale.h;memory.h;paths.h;poll.h;pthread.h;pwd.h;regex.h;signal.h;spawn.h;stdarg.h;stdint.h;stdlib.h;string.h;strings.h;sys/acl.h;sys/cdefs.h;sys/ioctl.h;sys/mount.h;sys/param.h;sys/poll.h;sys/select.h;sys/stat.h;sys/statfs.h;sys/statvfs.h;sys/time.h;sys/utime.h exist failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2063597905/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2063597905.dir/build.make CMakeFiles/cmTryCompileExec2063597905.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2063597905.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec2063597905.dir/CheckIncludeFiles.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CheckIncludeFiles.c:36:23: fatal error: sys/utime.h: No such file or directory
+ #include <sys/utime.h>
+                       ^
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTryCompileExec2063597905.dir/CheckIncludeFiles.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec2063597905/fast] Error 2
+
+Source:
+/* */
+#include <acl/libacl.h>
+#include <ctype.h>
+#include <dlfcn.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <grp.h>
+#include <inttypes.h>
+#include <langinfo.h>
+#include <limits.h>
+#include <locale.h>
+#include <memory.h>
+#include <paths.h>
+#include <poll.h>
+#include <pthread.h>
+#include <pwd.h>
+#include <regex.h>
+#include <signal.h>
+#include <spawn.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/acl.h>
+#include <sys/cdefs.h>
+#include <sys/ioctl.h>
+#include <sys/mount.h>
+#include <sys/param.h>
+#include <sys/poll.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/statfs.h>
+#include <sys/statvfs.h>
+#include <sys/time.h>
+#include <sys/utime.h>
+
+
+int main(){return 0;}
+
+Determining size of __int64 failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec370166505/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec370166505.dir/build.make CMakeFiles/cmTryCompileExec370166505.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec370166505.dir/__INT64.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec370166505.dir/__INT64.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/__INT64.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/__INT64.c:17:22: error: ‘__int64’ undeclared here (not in a function)
+ #define SIZE (sizeof(__int64))
+                      ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/__INT64.c:19:12: note: in expansion of macro ‘SIZE’
+   ('0' + ((SIZE / 10000)%10)),
+            ^
+gmake[1]: *** [CMakeFiles/cmTryCompileExec370166505.dir/__INT64.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec370166505/fast] Error 2
+
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/__INT64.c:
+#include <sys/types.h>
+#include <stdint.h>
+#include <stddef.h>
+
+
+#undef KEY
+#if defined(__i386)
+# define KEY '_','_','i','3','8','6'
+#elif defined(__x86_64)
+# define KEY '_','_','x','8','6','_','6','4'
+#elif defined(__ppc__)
+# define KEY '_','_','p','p','c','_','_'
+#elif defined(__ppc64__)
+# define KEY '_','_','p','p','c','6','4','_','_'
+#endif
+
+#define SIZE (sizeof(__int64))
+char info_size[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)),
+  ']',
+#ifdef KEY
+  ' ','k','e','y','[', KEY, ']',
+#endif
+  '\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_size[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining size of unsigned __int64 failed with the following output:
+Change Dir: /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3007158080/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3007158080.dir/build.make CMakeFiles/cmTryCompileExec3007158080.dir/build
+gmake[1]: Entering directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3007158080.dir/UNSIGNED___INT64.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3007158080.dir/UNSIGNED___INT64.c.o   -c /home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:17:31: error: expected ‘)’ before ‘__int64’
+ #define SIZE (sizeof(unsigned __int64))
+                               ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:19:12: note: in expansion of macro ‘SIZE’
+   ('0' + ((SIZE / 10000)%10)),
+            ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:17:31: error: expected ‘)’ before ‘__int64’
+ #define SIZE (sizeof(unsigned __int64))
+                               ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:20:12: note: in expansion of macro ‘SIZE’
+   ('0' + ((SIZE / 1000)%10)),
+            ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:17:31: error: expected ‘)’ before ‘__int64’
+ #define SIZE (sizeof(unsigned __int64))
+                               ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:21:12: note: in expansion of macro ‘SIZE’
+   ('0' + ((SIZE / 100)%10)),
+            ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:17:31: error: expected ‘)’ before ‘__int64’
+ #define SIZE (sizeof(unsigned __int64))
+                               ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:22:12: note: in expansion of macro ‘SIZE’
+   ('0' + ((SIZE / 10)%10)),
+            ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:17:31: error: expected ‘)’ before ‘__int64’
+ #define SIZE (sizeof(unsigned __int64))
+                               ^
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:23:12: note: in expansion of macro ‘SIZE’
+   ('0' +  (SIZE    % 10)),
+            ^
+gmake[1]: *** [CMakeFiles/cmTryCompileExec3007158080.dir/UNSIGNED___INT64.c.o] Error 1
+gmake[1]: Leaving directory `/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTryCompileExec3007158080/fast] Error 2
+
+/home/pierre/src/karakul/qt4/base/github/brzdm/build/CMakeFiles/CheckTypeSize/UNSIGNED___INT64.c:
+#include <sys/types.h>
+#include <stdint.h>
+#include <stddef.h>
+
+
+#undef KEY
+#if defined(__i386)
+# define KEY '_','_','i','3','8','6'
+#elif defined(__x86_64)
+# define KEY '_','_','x','8','6','_','6','4'
+#elif defined(__ppc__)
+# define KEY '_','_','p','p','c','_','_'
+#elif defined(__ppc64__)
+# define KEY '_','_','p','p','c','6','4','_','_'
+#endif
+
+#define SIZE (sizeof(unsigned __int64))
+char info_size[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)),
+  ']',
+#ifdef KEY
+  ' ','k','e','y','[', KEY, ']',
+#endif
+  '\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_size[argc];
+  (void)argv;
+  return require;
+}
+
+

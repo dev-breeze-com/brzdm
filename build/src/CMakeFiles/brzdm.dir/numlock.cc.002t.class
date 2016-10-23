@@ -1,0 +1,835 @@
+Class <anonymous struct>
+   size=8 align=4
+   base size=8 base align=4
+<anonymous struct> (0x0x7f8bf1380900) 0
+
+Class <anonymous struct>
+   size=128 align=8
+   base size=128 base align=8
+<anonymous struct> (0x0x7f8bf1380960) 0
+
+Class timespec
+   size=16 align=8
+   base size=16 base align=8
+timespec (0x0x7f8bf13809c0) 0
+
+Class timeval
+   size=16 align=8
+   base size=16 base align=8
+timeval (0x0x7f8bf1380a20) 0
+
+Class <anonymous struct>
+   size=128 align=8
+   base size=128 base align=8
+<anonymous struct> (0x0x7f8bf1380a80) 0
+
+Class pthread_attr_t
+   size=56 align=8
+   base size=56 base align=8
+pthread_attr_t (0x0x7f8bf1380ae0) 0
+
+Class __pthread_internal_list
+   size=16 align=8
+   base size=16 base align=8
+__pthread_internal_list (0x0x7f8bf1380b40) 0
+
+Class <anonymous union>::__pthread_mutex_s
+   size=40 align=8
+   base size=40 base align=8
+<anonymous union>::__pthread_mutex_s (0x0x7f8bf1380c00) 0
+
+Class <anonymous union>
+   size=40 align=8
+   base size=40 base align=8
+<anonymous union> (0x0x7f8bf1380ba0) 0
+
+Class <anonymous union>
+   size=4 align=4
+   base size=4 base align=4
+<anonymous union> (0x0x7f8bf1380c60) 0
+
+Class <anonymous union>::<anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous union>::<anonymous struct> (0x0x7f8bf1380d20) 0
+
+Class <anonymous union>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous union> (0x0x7f8bf1380cc0) 0
+
+Class <anonymous union>
+   size=4 align=4
+   base size=4 base align=4
+<anonymous union> (0x0x7f8bf1380d80) 0
+
+Class <anonymous union>::<anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous union>::<anonymous struct> (0x0x7f8bf1380e40) 0
+
+Class <anonymous union>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous union> (0x0x7f8bf1380de0) 0
+
+Class <anonymous union>
+   size=8 align=8
+   base size=8 base align=8
+<anonymous union> (0x0x7f8bf1380ea0) 0
+
+Class <anonymous union>
+   size=32 align=8
+   base size=32 base align=8
+<anonymous union> (0x0x7f8bf1380f00) 0
+
+Class <anonymous union>
+   size=4 align=4
+   base size=4 base align=4
+<anonymous union> (0x0x7f8bf1380f60) 0
+
+Class <anonymous struct>
+   size=32 align=16
+   base size=32 base align=16
+<anonymous struct> (0x0x7f8bf109d000) 0
+
+Class _XExtData
+   size=32 align=8
+   base size=32 base align=8
+_XExtData (0x0x7f8bf109d060) 0
+
+Class <anonymous struct>
+   size=16 align=4
+   base size=16 base align=4
+<anonymous struct> (0x0x7f8bf109d0c0) 0
+
+Class <anonymous struct>
+   size=12 align=4
+   base size=12 base align=4
+<anonymous struct> (0x0x7f8bf109d120) 0
+
+Class <anonymous struct>
+   size=128 align=8
+   base size=128 base align=8
+<anonymous struct> (0x0x7f8bf109d180) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf109d1e0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf109d240) 0
+
+Class <anonymous struct>
+   size=128 align=8
+   base size=128 base align=8
+<anonymous struct> (0x0x7f8bf109d2a0) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf109d300) 0
+
+Class <anonymous struct>
+   size=112 align=8
+   base size=112 base align=8
+<anonymous struct> (0x0x7f8bf109d360) 0
+
+Class <anonymous struct>
+   size=136 align=8
+   base size=136 base align=8
+<anonymous struct> (0x0x7f8bf109d3c0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf109d420) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf109d480) 0
+
+Class _XImage::funcs
+   size=48 align=8
+   base size=48 base align=8
+_XImage::funcs (0x0x7f8bf109d540) 0
+
+Class _XImage
+   size=136 align=8
+   base size=136 base align=8
+_XImage (0x0x7f8bf109d4e0) 0
+
+Class <anonymous struct>
+   size=40 align=8
+   base size=40 base align=8
+<anonymous struct> (0x0x7f8bf109d5a0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf109d600) 0
+
+Class <anonymous struct>
+   size=8 align=2
+   base size=8 base align=2
+<anonymous struct> (0x0x7f8bf109d660) 0
+
+Class <anonymous struct>
+   size=4 align=2
+   base size=4 base align=2
+<anonymous struct> (0x0x7f8bf109d6c0) 0
+
+Class <anonymous struct>
+   size=8 align=2
+   base size=8 base align=2
+<anonymous struct> (0x0x7f8bf109d720) 0
+
+Class <anonymous struct>
+   size=12 align=2
+   base size=12 base align=2
+<anonymous struct> (0x0x7f8bf109d780) 0
+
+Class <anonymous struct>
+   size=32 align=4
+   base size=32 base align=4
+<anonymous struct> (0x0x7f8bf109d7e0) 0
+
+Class <anonymous struct>
+   size=64 align=8
+   base size=64 base align=8
+<anonymous struct> (0x0x7f8bf109d840) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf109d8a0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf109d900) 0
+
+Class <anonymous struct>
+   size=296 align=8
+   base size=296 base align=8
+<anonymous struct> (0x0x7f8bf109d960) 0
+
+Class <anonymous struct>
+   size=96 align=8
+   base size=96 base align=8
+<anonymous struct> (0x0x7f8bf109d9c0) 0
+
+Class <anonymous struct>
+   size=96 align=8
+   base size=96 base align=8
+<anonymous struct> (0x0x7f8bf109da20) 0
+
+Class <anonymous struct>
+   size=96 align=8
+   base size=96 base align=8
+<anonymous struct> (0x0x7f8bf109da80) 0
+
+Class <anonymous struct>
+   size=104 align=8
+   base size=104 base align=8
+<anonymous struct> (0x0x7f8bf109dae0) 0
+
+Class <anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous struct> (0x0x7f8bf109db40) 0
+
+Class <anonymous struct>
+   size=72 align=8
+   base size=72 base align=8
+<anonymous struct> (0x0x7f8bf109dba0) 0
+
+Class <anonymous struct>
+   size=64 align=8
+   base size=64 base align=8
+<anonymous struct> (0x0x7f8bf109dc00) 0
+
+Class <anonymous struct>
+   size=72 align=8
+   base size=72 base align=8
+<anonymous struct> (0x0x7f8bf109dc60) 0
+
+Class <anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous struct> (0x0x7f8bf109dcc0) 0
+
+Class <anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous struct> (0x0x7f8bf109dd20) 0
+
+Class <anonymous struct>
+   size=72 align=8
+   base size=72 base align=8
+<anonymous struct> (0x0x7f8bf109dd80) 0
+
+Class <anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous struct> (0x0x7f8bf109dde0) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf109de40) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf109dea0) 0
+
+Class <anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous struct> (0x0x7f8bf109df00) 0
+
+Class <anonymous struct>
+   size=72 align=8
+   base size=72 base align=8
+<anonymous struct> (0x0x7f8bf109df60) 0
+
+Class <anonymous struct>
+   size=88 align=8
+   base size=88 base align=8
+<anonymous struct> (0x0x7f8bf110a000) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a060) 0
+
+Class <anonymous struct>
+   size=48 align=8
+   base size=48 base align=8
+<anonymous struct> (0x0x7f8bf110a0c0) 0
+
+Class <anonymous struct>
+   size=96 align=8
+   base size=96 base align=8
+<anonymous struct> (0x0x7f8bf110a120) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a180) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a1e0) 0
+
+Class <anonymous struct>
+   size=64 align=8
+   base size=64 base align=8
+<anonymous struct> (0x0x7f8bf110a240) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a2a0) 0
+
+Class <anonymous struct>
+   size=80 align=8
+   base size=80 base align=8
+<anonymous struct> (0x0x7f8bf110a300) 0
+
+Class <anonymous struct>
+   size=72 align=8
+   base size=72 base align=8
+<anonymous struct> (0x0x7f8bf110a360) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a420) 0
+
+Class <anonymous struct>::<anonymous union>
+   size=40 align=8
+   base size=40 base align=8
+<anonymous struct>::<anonymous union> (0x0x7f8bf110a4e0) 0
+
+Class <anonymous struct>
+   size=96 align=8
+   base size=96 base align=8
+<anonymous struct> (0x0x7f8bf110a480) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a5a0) 0
+
+Class <anonymous struct>
+   size=40 align=8
+   base size=40 base align=8
+<anonymous struct> (0x0x7f8bf110a600) 0
+
+Class <anonymous struct>
+   size=40 align=8
+   base size=40 base align=8
+<anonymous struct> (0x0x7f8bf110a660) 0
+
+Class <anonymous struct>
+   size=40 align=8
+   base size=40 base align=8
+<anonymous struct> (0x0x7f8bf110a6c0) 0
+
+Class <anonymous struct>
+   size=56 align=8
+   base size=56 base align=8
+<anonymous struct> (0x0x7f8bf110a720) 0
+
+Class _XEvent
+   size=192 align=8
+   base size=192 base align=8
+_XEvent (0x0x7f8bf110a780) 0
+
+Class <anonymous struct>
+   size=12 align=2
+   base size=12 base align=2
+<anonymous struct> (0x0x7f8bf110a7e0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf110a840) 0
+
+Class <anonymous struct>
+   size=96 align=8
+   base size=96 base align=8
+<anonymous struct> (0x0x7f8bf110a8a0) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf110a900) 0
+
+Class <anonymous struct>
+   size=2 align=1
+   base size=2 base align=1
+<anonymous struct> (0x0x7f8bf110a960) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf110a9c0) 0
+
+Class <anonymous union>
+   size=8 align=8
+   base size=8 base align=8
+<anonymous union> (0x0x7f8bf110aa20) 0
+
+Class <anonymous struct>
+   size=16 align=2
+   base size=16 base align=2
+<anonymous struct> (0x0x7f8bf110aa80) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf110aae0) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf110ab40) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf110aba0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf110ac00) 0
+
+Class <anonymous struct>
+   size=24 align=8
+   base size=24 base align=8
+<anonymous struct> (0x0x7f8bf110ac60) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf110acc0) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf110ad20) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf110ad80) 0
+
+Class _XIMText::<anonymous union>
+   size=8 align=8
+   base size=8 base align=8
+_XIMText::<anonymous union> (0x0x7f8bf110ae40) 0
+
+Class _XIMText
+   size=32 align=8
+   base size=32 base align=8
+_XIMText (0x0x7f8bf110ade0) 0
+
+Class _XIMPreeditStateNotifyCallbackStruct
+   size=8 align=8
+   base size=8 base align=8
+_XIMPreeditStateNotifyCallbackStruct (0x0x7f8bf110aea0) 0
+
+Class _XIMStringConversionText::<anonymous union>
+   size=8 align=8
+   base size=8 base align=8
+_XIMStringConversionText::<anonymous union> (0x0x7f8bf110af60) 0
+
+Class _XIMStringConversionText
+   size=32 align=8
+   base size=32 base align=8
+_XIMStringConversionText (0x0x7f8bf110af00) 0
+
+Class _XIMStringConversionCallbackStruct
+   size=24 align=8
+   base size=24 base align=8
+_XIMStringConversionCallbackStruct (0x0x7f8bf1154000) 0
+
+Class _XIMPreeditDrawCallbackStruct
+   size=24 align=8
+   base size=24 base align=8
+_XIMPreeditDrawCallbackStruct (0x0x7f8bf1154060) 0
+
+Class _XIMPreeditCaretCallbackStruct
+   size=12 align=4
+   base size=12 base align=4
+_XIMPreeditCaretCallbackStruct (0x0x7f8bf11540c0) 0
+
+Class _XIMStatusDrawCallbackStruct::<anonymous union>
+   size=8 align=8
+   base size=8 base align=8
+_XIMStatusDrawCallbackStruct::<anonymous union> (0x0x7f8bf1154180) 0
+
+Class _XIMStatusDrawCallbackStruct
+   size=16 align=8
+   base size=16 base align=8
+_XIMStatusDrawCallbackStruct (0x0x7f8bf1154120) 0
+
+Class _XIMHotKeyTrigger
+   size=16 align=8
+   base size=16 base align=8
+_XIMHotKeyTrigger (0x0x7f8bf11541e0) 0
+
+Class _XIMHotKeyTriggers
+   size=16 align=8
+   base size=16 base align=8
+_XIMHotKeyTriggers (0x0x7f8bf1154240) 0
+
+Class <anonymous struct>
+   size=16 align=8
+   base size=16 base align=8
+<anonymous struct> (0x0x7f8bf11542a0) 0
+
+Class _XkbStateRec
+   size=18 align=2
+   base size=18 base align=2
+_XkbStateRec (0x0x7f8bf1154300) 0
+
+Class _XkbMods
+   size=4 align=2
+   base size=4 base align=2
+_XkbMods (0x0x7f8bf1154360) 0
+
+Class _XkbKTMapEntry
+   size=12 align=4
+   base size=12 base align=4
+_XkbKTMapEntry (0x0x7f8bf11543c0) 0
+
+Class _XkbKeyType
+   size=40 align=8
+   base size=40 base align=8
+_XkbKeyType (0x0x7f8bf1154420) 0
+
+Class _XkbBehavior
+   size=2 align=1
+   base size=2 base align=1
+_XkbBehavior (0x0x7f8bf1154480) 0
+
+Class _XkbAnyAction
+   size=8 align=1
+   base size=8 base align=1
+_XkbAnyAction (0x0x7f8bf11544e0) 0
+
+Class _XkbModAction
+   size=6 align=1
+   base size=6 base align=1
+_XkbModAction (0x0x7f8bf1154540) 0
+
+Class _XkbGroupAction
+   size=3 align=1
+   base size=3 base align=1
+_XkbGroupAction (0x0x7f8bf11545a0) 0
+
+Class _XkbISOAction
+   size=8 align=1
+   base size=8 base align=1
+_XkbISOAction (0x0x7f8bf1154600) 0
+
+Class _XkbPtrAction
+   size=6 align=1
+   base size=6 base align=1
+_XkbPtrAction (0x0x7f8bf1154660) 0
+
+Class _XkbPtrBtnAction
+   size=4 align=1
+   base size=4 base align=1
+_XkbPtrBtnAction (0x0x7f8bf11546c0) 0
+
+Class _XkbPtrDfltAction
+   size=4 align=1
+   base size=4 base align=1
+_XkbPtrDfltAction (0x0x7f8bf1154720) 0
+
+Class _XkbSwitchScreenAction
+   size=3 align=1
+   base size=3 base align=1
+_XkbSwitchScreenAction (0x0x7f8bf1154780) 0
+
+Class _XkbCtrlsAction
+   size=6 align=1
+   base size=6 base align=1
+_XkbCtrlsAction (0x0x7f8bf11547e0) 0
+
+Class _XkbMessageAction
+   size=8 align=1
+   base size=8 base align=1
+_XkbMessageAction (0x0x7f8bf1154840) 0
+
+Class _XkbRedirectKeyAction
+   size=8 align=1
+   base size=8 base align=1
+_XkbRedirectKeyAction (0x0x7f8bf11548a0) 0
+
+Class _XkbDeviceBtnAction
+   size=5 align=1
+   base size=5 base align=1
+_XkbDeviceBtnAction (0x0x7f8bf1154900) 0
+
+Class _XkbDeviceValuatorAction
+   size=8 align=1
+   base size=8 base align=1
+_XkbDeviceValuatorAction (0x0x7f8bf1154960) 0
+
+Class _XkbAction
+   size=8 align=1
+   base size=8 base align=1
+_XkbAction (0x0x7f8bf11549c0) 0
+
+Class _XkbControls
+   size=84 align=4
+   base size=84 base align=4
+_XkbControls (0x0x7f8bf1154a20) 0
+
+Class _XkbServerMapRec
+   size=64 align=8
+   base size=64 base align=8
+_XkbServerMapRec (0x0x7f8bf1154a80) 0
+
+Class _XkbSymMapRec
+   size=8 align=2
+   base size=8 base align=2
+_XkbSymMapRec (0x0x7f8bf1154ae0) 0
+
+Class _XkbClientMapRec
+   size=48 align=8
+   base size=48 base align=8
+_XkbClientMapRec (0x0x7f8bf1154b40) 0
+
+Class _XkbSymInterpretRec
+   size=24 align=8
+   base size=24 base align=8
+_XkbSymInterpretRec (0x0x7f8bf1154ba0) 0
+
+Class _XkbCompatMapRec
+   size=32 align=8
+   base size=32 base align=8
+_XkbCompatMapRec (0x0x7f8bf1154c00) 0
+
+Class _XkbIndicatorMapRec
+   size=12 align=4
+   base size=12 base align=4
+_XkbIndicatorMapRec (0x0x7f8bf1154c60) 0
+
+Class _XkbIndicatorRec
+   size=392 align=8
+   base size=392 base align=8
+_XkbIndicatorRec (0x0x7f8bf1154cc0) 0
+
+Class _XkbKeyNameRec
+   size=4 align=1
+   base size=4 base align=1
+_XkbKeyNameRec (0x0x7f8bf1154d20) 0
+
+Class _XkbKeyAliasRec
+   size=8 align=1
+   base size=8 base align=1
+_XkbKeyAliasRec (0x0x7f8bf1154d80) 0
+
+Class _XkbNamesRec
+   size=496 align=8
+   base size=496 base align=8
+_XkbNamesRec (0x0x7f8bf1154de0) 0
+
+Class _XkbDesc
+   size=72 align=8
+   base size=72 base align=8
+_XkbDesc (0x0x7f8bf1154e40) 0
+
+Class _XkbMapChanges
+   size=22 align=2
+   base size=22 base align=2
+_XkbMapChanges (0x0x7f8bf1154ea0) 0
+
+Class _XkbControlsChanges
+   size=12 align=4
+   base size=12 base align=4
+_XkbControlsChanges (0x0x7f8bf1154f00) 0
+
+Class _XkbIndicatorChanges
+   size=8 align=4
+   base size=8 base align=4
+_XkbIndicatorChanges (0x0x7f8bf1154f60) 0
+
+Class _XkbNameChanges
+   size=32 align=8
+   base size=32 base align=8
+_XkbNameChanges (0x0x7f8bf0e4f000) 0
+
+Class _XkbCompatChanges
+   size=6 align=2
+   base size=6 base align=2
+_XkbCompatChanges (0x0x7f8bf0e4f060) 0
+
+Class _XkbChanges
+   size=88 align=8
+   base size=88 base align=8
+_XkbChanges (0x0x7f8bf0e4f0c0) 0
+
+Class _XkbComponentNames
+   size=48 align=8
+   base size=48 base align=8
+_XkbComponentNames (0x0x7f8bf0e4f120) 0
+
+Class _XkbComponentName
+   size=16 align=8
+   base size=16 base align=8
+_XkbComponentName (0x0x7f8bf0e4f180) 0
+
+Class _XkbComponentList
+   size=72 align=8
+   base size=72 base align=8
+_XkbComponentList (0x0x7f8bf0e4f1e0) 0
+
+Class _XkbDeviceLedInfo
+   size=664 align=8
+   base size=664 base align=8
+_XkbDeviceLedInfo (0x0x7f8bf0e4f240) 0
+
+Class _XkbDeviceInfo
+   size=56 align=8
+   base size=56 base align=8
+_XkbDeviceInfo (0x0x7f8bf0e4f2a0) 0
+
+Class _XkbDeviceLedChanges
+   size=16 align=8
+   base size=16 base align=8
+_XkbDeviceLedChanges (0x0x7f8bf0e4f300) 0
+
+Class _XkbDeviceChanges
+   size=24 align=8
+   base size=24 base align=8
+_XkbDeviceChanges (0x0x7f8bf0e4f360) 0
+
+Class _XkbAnyEvent
+   size=48 align=8
+   base size=48 base align=8
+_XkbAnyEvent (0x0x7f8bf0e4f3c0) 0
+
+Class _XkbNewKeyboardNotify
+   size=80 align=8
+   base size=80 base align=8
+_XkbNewKeyboardNotify (0x0x7f8bf0e4f420) 0
+
+Class _XkbMapNotifyEvent
+   size=104 align=8
+   base size=104 base align=8
+_XkbMapNotifyEvent (0x0x7f8bf0e4f480) 0
+
+Class _XkbStateNotifyEvent
+   size=104 align=8
+   base size=104 base align=8
+_XkbStateNotifyEvent (0x0x7f8bf0e4f4e0) 0
+
+Class _XkbControlsNotify
+   size=72 align=8
+   base size=72 base align=8
+_XkbControlsNotify (0x0x7f8bf0e4f540) 0
+
+Class _XkbIndicatorNotify
+   size=56 align=8
+   base size=56 base align=8
+_XkbIndicatorNotify (0x0x7f8bf0e4f5a0) 0
+
+Class _XkbNamesNotify
+   size=96 align=8
+   base size=96 base align=8
+_XkbNamesNotify (0x0x7f8bf0e4f660) 0
+
+Class _XkbCompatMapNotify
+   size=64 align=8
+   base size=64 base align=8
+_XkbCompatMapNotify (0x0x7f8bf0e4f6c0) 0
+
+Class _XkbBellNotify
+   size=96 align=8
+   base size=96 base align=8
+_XkbBellNotify (0x0x7f8bf0e4f720) 0
+
+Class _XkbActionMessage
+   size=80 align=8
+   base size=80 base align=8
+_XkbActionMessage (0x0x7f8bf0e4f780) 0
+
+Class _XkbAccessXNotify
+   size=64 align=8
+   base size=64 base align=8
+_XkbAccessXNotify (0x0x7f8bf0e4f7e0) 0
+
+Class _XkbExtensionDeviceNotify
+   size=88 align=8
+   base size=88 base align=8
+_XkbExtensionDeviceNotify (0x0x7f8bf0e4f840) 0
+
+Class _XkbEvent
+   size=192 align=8
+   base size=192 base align=8
+_XkbEvent (0x0x7f8bf0e4f8a0) 0
+
+Class NumLock
+   size=1 align=1
+   base size=0 base align=1
+NumLock (0x0x7f8bf0e4f900) 0 empty
+
+Class __locale_struct
+   size=232 align=8
+   base size=232 base align=8
+__locale_struct (0x0x7f8bf0e4f960) 0
+
