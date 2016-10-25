@@ -32,17 +32,14 @@ INTRODUCTION
    - User Photo Panel support
    - Time Clock Panel support
    - CMake build procedure
-
-
-  Planned Features:
-   
-   - Wayland support
-   - Kiosk support
+   - Wayland support (planned)
+   - Kiosk support (planned)
 
 
 PREREQUISITES
 
  This project requires:
+ 
   * Cross-platform Make (CMake) v2.8.2+
   * GNU Make or equivalent.
   * GCC or an alternative, conformant C++ compiler.
@@ -54,6 +51,7 @@ PREREQUISITES
 
 
 USAGE
+
   To launch brzdm, execute the brzdm binary, Use the -d option
   if you want it to run as a daemon in the background.
 
@@ -63,17 +61,19 @@ USAGE
   sessions entry is used for ordering the list of desktops.
 
   Special usernames (commands configurable in the config file):
+  
   - F5/halt: halt the system
   - F6/reboot: reboot the system
   - F7/suspend: suspend the system (unsafe)
-  - F8/kiosk: invoke the kiosk app
-
+  - F8/kiosk: invoke the kiosk app  
+  
   Pressing the F11 key executes a user-specified command, see the
   configuration file; the default is to take a screenshot if the
   ImageMagick/GraphicsMagik 'import' program is available.
 
 
 THEMES
+
   See file THEMES
 
 
