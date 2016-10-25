@@ -17,7 +17,7 @@ INTRODUCTION
   to be simple, fast and independent from the various desktop
   environments. Text and image display is handled by imlib2.
 
-  It is derived from SLim by Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+  It is derived from SLim by Nobuhiro Iwamatsu,
   which was based on the latest release of Login.app by Per Lidén.
 
   Features:
