@@ -33,7 +33,9 @@ INTRODUCTION
    - Time Clock Panel support
    - CMake build procedure
 
-   Planned Features:
+
+  Planned Features:
+   
    - Wayland support
    - Kiosk support
 
