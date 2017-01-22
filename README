@@ -1,4 +1,5 @@
 BRZDM
+=====
  
   1. INTRODUCTION
   2. PREREQUISITES
@@ -12,12 +13,13 @@ BRZDM
 
 
 INTRODUCTION
+============
 
   Brzdm is a simple graphical login manager for X11. It aims
   to be simple, fast and independent from the various desktop
   environments. Text and image display is handled by imlib2.
 
-  It is derived from SLim by Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+  It is derived from SLim by Nobuhiro Iwamatsu,
   which was based on the latest release of Login.app by Per Lidén.
 
   Features:
@@ -39,6 +41,7 @@ INTRODUCTION
 
 
 PREREQUISITES
+=============
 
  This project requires:
   * Cross-platform Make (CMake) v2.8.2+
@@ -52,6 +55,7 @@ PREREQUISITES
 
 
 USAGE
+=====
   To launch brzdm, execute the brzdm binary, Use the -d option
   if you want it to run as a daemon in the background.
 
@@ -72,10 +76,12 @@ USAGE
 
 
 THEMES
+======
   See file THEMES
 
 
 BUILDING
+========
 
   This project uses the Cross-platform Make (CMake) build system. However, we
   have conveniently provided a wrapper configure script and Makefile so that
@@ -86,23 +92,27 @@ BUILDING
 
 
 INSTALLATION
+============
 
   Once the project has been built (see "BUILDING"),
   execute "sudo make install". See the INSTALL file
 
 
 KNOWN BUGS
+==========
 
   There an unresolved font access problem, when running on 64-bit machines.
 
 
 BUGS
+====
 
   Bug reports, patches and suggestions are much appreciated.
   See the GitHub account https://dev-breeze-com.github.io/brzdm/
 
 
 COPYRIGHT
+=========
 
   Brzdm is copyright (c) 2015 Tsert.Inc <contact@tsert.com>
   licensed through the GNU General Public License V3.0. 

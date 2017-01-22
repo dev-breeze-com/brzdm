@@ -1,9 +1,11 @@
 // Brzdm - Simple Login/Display Manager
 //
-// Copyright (C) 2015 Tsert.Inc <contact@tsert.com>
 // Copyright (C) 1997, 1998 Per Liden
 // Copyright (C) 2004-06 Simone Rota <sip@varlock.com>
 // Copyright (C) 2004-06 Johannes Winkelmann <jw@tks6.net>
+//
+// @author Pierre Innocent <dev@breezeos.com>
+// Copyright (C) Tsert.Inc, All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

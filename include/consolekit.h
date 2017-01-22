@@ -1,7 +1,9 @@
 // Brzdm - Breeze::OS Login/Display Manager
 //
-// Copyright (C) 2015 Tsert.Inc <contact@tsert.com>
 // Copyright (C) 2007 Martin Parm
+//
+// @author Pierre Innocent <dev@breezeos.com>
+// Copyright (C) Tsert.Inc, All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
