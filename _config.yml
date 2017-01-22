@@ -1,0 +1,8 @@
+title: Brzdm
+description: Brzdm is a graphical display/login manager for X11, using Imlib2
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
