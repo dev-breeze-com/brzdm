@@ -56,7 +56,6 @@ PREREQUISITES
 USAGE
 =====
 
->>>>>>> 05309fffeb9ae00465b08a33dc7927d692181d62:README.md
   To launch brzdm, execute the brzdm binary, Use the -d option
   if you want it to run as a daemon in the background.
 
