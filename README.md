@@ -116,7 +116,7 @@ BUGS
 COPYRIGHT
 =========
 
-  Brzdm is copyright (c) 2015 Tsert.Inc, All rights reserved
+  Brzdm is copyright (c) 2015 Tsert.Inc, All rights reserved  
   licensed through the GNU General Public License V3.0. 
 
   Slim is copyright (c) 2004-06 by Simone Rota, Johannes Winkelmann,
