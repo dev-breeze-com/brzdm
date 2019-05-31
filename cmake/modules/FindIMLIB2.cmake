@@ -1,9 +1,9 @@
 # - Try to find the IMLIB2 libraries
 # Once done this will define
 #
-#  IMLIB2_FOUND - system has pam
-#  IMLIB2_INCLUDE_DIR - the pam include directory
-#  IMLIB2_LIBRARIES - libpam library
+#  IMLIB2_FOUND - system has Imlib2
+#  IMLIB2_INCLUDE_DIR - the Imlib2 include directory
+#  IMLIB2_LIBRARIES - libImlib2 library
 
 if (IMLIB2_INCLUDE_DIR AND IMLIB2_LIBRARY)
 	# Already in cache, be silent

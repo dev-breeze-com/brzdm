@@ -48,12 +48,10 @@ void Config::set(const std::string& key, const std::string& value)
 void Config::set(const std::string& prefix, const Config& entries)
 //-----------------------------------------------------------------------------
 {
-	const_iterator it = entries.begin();
-
-	for (; it != entries.end(); it++) {
-		std::string key( prefix + "/" + (*it).first );
+	for (const auto& tuple: entries) {
+		std::string key( prefix + "/" + tuple.first );
 		Utils::strrepl( key, "//", "/" );
-		operator[]( key ) = (*it).second;
+		operator[]( key ) = tuple.second;
 	}
 }
 
@@ -105,10 +103,8 @@ float Config::getFloat(const std::string& key, float value) const
 void Config::zap()
 //-----------------------------------------------------------------------------
 {
-	iterator it = begin();
-
-	for (; it != end(); it++) {
-		Utils::strzap( (*it).second );
+	for (auto& tuple: (*this)) {
+		Utils::strzap( tuple.second );
 	}
 }
 
@@ -116,10 +112,8 @@ void Config::zap()
 void Config::clearValues()
 //-----------------------------------------------------------------------------
 {
-	iterator it = begin();
-
-	for (; it != end(); it++) {
-		(*it).second.clear();
+	for (auto& tuple: (*this)) {
+		tuple.second.clear();
 	}
 }
 
@@ -127,23 +121,23 @@ void Config::clearValues()
 bool Config::get(const std::string& key, Config& entries, bool strip) const
 //-----------------------------------------------------------------------------
 {
-	const_iterator it = std::map<std::string, std::string>::begin();
 	std::string prefix( key );
 	std::string::size_type offset = prefix.rfind( '/' );
 
 	if (offset != prefix.length()-1)
 		prefix += "/";
 
-	for (; it != end(); it++) {
-		std::string key( (*it).first );
+	for (const auto& tuple: (*this)) {
+		std::string key( tuple.first );
 
 		if (key.find( prefix ) == 0) {
-			std::string value( (*it).second );
+			std::string value( tuple.second );
 			if ( strip ) { Utils::strdel( key, prefix ); }
 			entries.insert( std::make_pair( key, value ));
 //std::cout << "Config::get [ '" << key << "','" << value << "' ]\n";
 		}
 	}
+
 	return entries.size() > 0;
 }
 
@@ -154,12 +148,13 @@ const std::string& Config::get(const std::string& key, const std::string& value,
 	const_iterator it;
 
 	if ( useval ) {
-		for (it = begin(); it != end(); it++) {
-			if ((*it).second == key)
-				return (*it).first;
+		for (const auto& tuple: (*this)) {
+			if (key == tuple.second)
+				return tuple.first;
 		}
 		return value;
 	}
+
 	it = std::map<std::string, std::string>::find( key );
 	return it != end() ? (*it).second : value;
 }
@@ -175,18 +170,18 @@ bool Config::contains(const std::string& key) const
 Config& Config::operator+=(const Config& entries)
 //-----------------------------------------------------------------------------
 {
-	const_iterator it = entries.begin();
 	const std::list<std::string>& keys = entries.getKeys();
 
 	if (keys.size() > 0) {
 		_keys.insert( _keys.begin(), keys.begin(), keys.end() );
 	}
 
-	for (; it != entries.end(); it++) {
-		std::string key( (*it).first );
-		std::string value( (*it).second );
+	for (const auto& tuple: entries) {
+		std::string key( tuple.first );
+		std::string value( tuple.second );
 		operator[]( key ) = value;
 	}
+
 	return (*this);
 }
 
@@ -257,9 +252,9 @@ void Config::getEntries(std::string& entry, std::string& group, int& level)
 		if (std::strncmp( strbuf, "[/", 2 ) == 0) {
 			level -= 1;
 
-			if ((start = group.rfind( '/' )) != std::string::npos)
+			if ((start = group.rfind( '/' )) != std::string::npos) {
 				group = group.substr( 0, start );
-			else {
+			} else {
 				group.clear();
 			}
 		} else {
@@ -273,9 +268,9 @@ void Config::getEntries(std::string& entry, std::string& group, int& level)
 			//
 			if ( level++ > 0 ) {
 			//std::cout << "Config GROUP '" << entry << "' LEVEL=" << level << "'\n";
-				if ( group.empty() )
+				if ( group.empty() ) {
 					group = entry;
-				else {
+				} else {
 					group += "/";
 					group += entry;
 				}
@@ -290,8 +285,7 @@ void Config::getEntries(std::string& entry, std::string& group, int& level)
 		(*strptr) = '\0';
 		key = strbuf;
 		value = ++strptr;
-	}
-	else {
+	} else {
 		key = entry;
 		value = entry;
 	}
@@ -307,9 +301,9 @@ void Config::getEntries(std::string& entry, std::string& group, int& level)
 			key.insert( 0, group );
 		}
 
-		if ((_mode & Config::ValueAsKey) > 0)
+		if ((_mode & Config::ValueAsKey) > 0) {
 			operator[]( value ) = key;
-		else {
+		} else {
 			operator[]( key ) = value;
 //std::cout << "GROUP='" << group << "' KEY='" << key << "' VALUE='" << value << "'\n";
 		}
@@ -359,15 +353,18 @@ int Config::percent2int(const std::string& str, int total)
 		percent = true;
 	}
 
-	float intval = (int) strtof( value.c_str(), &err );
+	float intval = strtof( value.c_str(), &err );
+
+//std::cerr << "percent '" << str << "'  '" << value << "' " << intval << " ERR=" << err << "\n";
 
 	if (percent && *err == 0) {
-		intval = intval / 100 * total;
+		intval = intval * total / 100; 
 
 		if ( !minus.empty() ) {
 			intval -= (int) strtol( minus.c_str(), &err, 10 );
 		}
 	}
+
 	return (*err == 0) ? intval : 0;
 }
 
@@ -376,9 +373,9 @@ int Config::string2int(const std::string& str, bool* ok)
 //-----------------------------------------------------------------------------
 {
 	char* err = 0;
-	int l = (int) strtol( str.c_str(), &err, 10 );
+	int val = (int) strtol( str.c_str(), &err, 10 );
 	if (ok) { *ok = (*err == 0); }
-	return (*err == 0) ? l : 0;
+	return (*err == 0) ? val : 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -386,26 +383,34 @@ float Config::string2float(const std::string& str, bool* ok)
 //-----------------------------------------------------------------------------
 {
 	char* err = 0;
-	float l = (int)strtof( str.c_str(), &err );
+	float val = (int)strtof( str.c_str(), &err );
 	if (ok) { *ok = (*err == 0); }
-	return (*err == 0) ? l : 0;
+	return (*err == 0) ? val : 0;
 }
 
 //-----------------------------------------------------------------------------
-void Config::split(std::vector<std::string>& v, const std::string& keys, char chr)// bool useEmpty)
+void Config::splitKey(std::vector<std::string>& v, const std::string& key, char chr)
 //-----------------------------------------------------------------------------
 {
-	std::string::const_iterator it = keys.begin();
+	std::string text( get( key ));
+	Config::split( v, text, chr  );
+}
+
+//-----------------------------------------------------------------------------
+void Config::split(std::vector<std::string>& v, const std::string& text, char chr)// bool useEmpty)
+//-----------------------------------------------------------------------------
+{
+	std::string::const_iterator it = text.begin();
 
 	v.clear();
 
-	//std::cout << keys << "\n";
+	//std::cout << text << "\n";
 
 	while (true) {
 
 		std::string::const_iterator start = it;
 
-		while (*it != chr && it != keys.end()) { ++it; }
+		while (*it != chr && it != text.end()) { ++it; }
 
 		std::string tmp( std::string( start, it ));
 
@@ -413,10 +418,10 @@ void Config::split(std::vector<std::string>& v, const std::string& keys, char ch
 		if (tmp.size() > 0)
 			v.push_back( tmp );
 
-		if (it == keys.end())
+		if (it == text.end())
 			break;
 
-		if (++it == keys.end()) {
+		if (++it == text.end()) {
 			//if (useEmpty)
 			//	v.push_back("");
 			break;

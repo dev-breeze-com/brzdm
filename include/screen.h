@@ -82,23 +82,22 @@ public:
 
 	static void blank();
 	static void showText();
+	static void setTestMode(bool);
 
 	static void destroy(Window wid);
 	static void clear(Window wid=0);
 	static void clear(const std::string& pane);
 
-	static void ungrabKeyboard();
-	static void grabKeyboard(Window);
+	//static void ungrabKeyboard();
+	//static void grabKeyboard(Window);
+	//static void switchSession();
+	//static void showSession(XftDraw *drawarea);
 
 	static void setName(const std::string& name);
 	static void setPassword(const std::string& pw);
 
 	static void takeSnapshot();
-	static void setBackground();
-	static void setBackground(const std::string& url);
-
-	static void switchSession();
-	static void showSession(XftDraw *drawarea);
+	static void setBackground(const std::string& url, Imlib_Image=0L);
 
 	static void disallow(int sig);
 	static void clearmesg(int sig);
@@ -130,11 +129,13 @@ public:
 	static Display* display();
 	static Colormap colormap();
 	static Window rootWindow();
+	static Pixmap rootPixmap();
 	static FieldType field();
 
 	static void createServerAuth();
 	static int getServerPID();
 
+	static bool testMode();
 	static bool noPasswdHalt();
 	static bool isServerStarted();
 	static bool session(SessionType);
@@ -176,7 +177,7 @@ private:
 	static FieldType _field;
 	static Config *_config;
 	static X11Info _x11;
-	static XftFonts _fonts;
+	//static XftFonts _fonts;
 	static Cursors _cursors;
 
 	static int _screen_w;
@@ -185,6 +186,7 @@ private:
 	static int _server_pid;
 	static int _server_started;
 
+	static bool _test_mode;
 	static bool _nopasswd_halt;
 	/*
 	GC TextGC;

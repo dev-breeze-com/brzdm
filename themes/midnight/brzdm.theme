@@ -1,10 +1,11 @@
 [Theme]
 
 # Reserved button names are:
-# Snapshot,
+# Snapshot, PhotoPanel,
 # Login, Kiosk,
 # Shutdown, Reboot, Suspend,
 # Prev, Next
+# PrevUser, NextUser
 #
 [Snapshot]
 type=button
@@ -95,7 +96,17 @@ opacity=70%
 # PhotoPanel, ClockPanel,
 #
 [Fonts]
-paths=/usr/share/fonts/TTF/:/usr/share/fonts/truetype/freefont/:/usr/share/fonts/truetype/ttf-dejavu/:/usr/share/fonts/truetype/ttf-liberation/:/usr/share/fonts/75dpi/:/usr/share/fonts/100dpi/
+/usr/share/fonts/TTF/
+/usr/share/fonts/truetype/freefont/
+/usr/share/fonts/truetype/ttf-dejavu/
+/usr/share/fonts/truetype/ttf-liberation/
+/usr/share/fonts/truetype/ttf-dejavu/
+/usr/share/fonts/75dpi/
+/usr/share/fonts/100dpi/
+/usr/share/fonts/freefont/
+/usr/share/fonts/dejavu/
+/usr/share/fonts/terminus/
+/usr/share/fonts/liberation-fonts/
 [/Fonts]
 
 [Background]
@@ -111,6 +122,11 @@ coord-y=50
 width=250
 height=60
 [/WatermarkPanel]
+
+[Message]
+username=Enter your username:
+password=Enter your password:
+[/Message]
 
 [LoginPanel]
 type=panel
@@ -129,10 +145,18 @@ width=525
 height=225
 [/LoginPanel]
 
-[Message]
-username=Enter your username:
-password=Enter your password:
-[/Message]
+[InputMesg]
+type=panel
+parent=LoginPanel
+bgcolor=#00AAAAAA
+font-name=DejaVuSans
+font-color=#FFFFFF
+font-size=14
+width=220
+height=30
+coord-x=75
+coord-y=100%-50
+[/InputMesg]
 
 [InputPanel]
 type=panel
@@ -142,25 +166,12 @@ parent=LoginPanel
 font-name=DejaVuSans
 font-color=#000000
 font-size=14
-width=200
+width=225
 height=30
-coord-x=100%-200
+coord-x=300
 coord-y=100%-50
 alignment=left
 [/InputPanel]
-
-[InputMesg]
-type=panel
-parent=LoginPanel
-bgcolor=#00AAAAAA
-font-name=DejaVuSans
-font-color=#FFFFFF
-font-size=14
-width=200
-height=30
-coord-x=100%-405
-coord-y=100%-50
-[/InputMesg]
 
 [MesgPanel]
 type=panel
@@ -231,14 +242,12 @@ ondemand=yes
 [/ClockPanel]
 
 #[PhotoPanel]
-## The source of photo for users.
-## Password -- retrieve path from GECOS entries
-## Path -- retrieve as /usr/share/brzdm/photo/%user.jpg
+## Photo -- retrieve path from GECOS entries
 #type=panel
-#photo=Password
-#background=photo.png
-#coord-x=90%
-#coord-y=10
+##background=photo.png
+#background=/usr/share/icons/oxygen/base/256x256/apps/clock.png
+#coord-x=50%
+#coord-y=100
 #halign=right
 #border=solid 1px #EEEEEE
 #shadow=yes

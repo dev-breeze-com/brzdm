@@ -45,6 +45,7 @@ int Screen::_screen_h = 1024;
 int Screen::_server_pid = 0;
 int Screen::_server_started = false;
 
+bool Screen::_test_mode = false;
 bool Screen::_nopasswd_halt = false;
 
 //-----------------------------------------------------------------------------
@@ -62,13 +63,15 @@ void Screen::init(Config* config, Panels *panels, const std::string& dpy)
 void Screen::selectInput(bool flag)
 //-----------------------------------------------------------------------------
 {
-	uint inputmask =
-		ExposureMask|
-		KeyPressMask|KeyReleaseMask|
-		ButtonPressMask|ButtonReleaseMask;
+	uint inputmask = KeyPressMask|KeyReleaseMask|
+		ButtonPressMask|ButtonReleaseMask|ExposureMask;
 
 	::XFlush( _x11.dpy );
-	::XSelectInput( _x11.dpy, _x11.rootwin, flag ? inputmask : 0 );
+
+	if ( !testMode() ) {
+		::XSelectInput( _x11.dpy, _x11.rootwin, flag ? inputmask : 0 );
+	}
+
 	::XSync( _x11.dpy, false );
 }
 
@@ -77,6 +80,7 @@ void Screen::destroy(Window win)
 //-----------------------------------------------------------------------------
 {
 	Display *dpy = Screen::display();
+
 	::XUngrabKeyboard( dpy, CurrentTime );
 	::XUnmapWindow( dpy, win );
 	::XSync( dpy, false );
@@ -94,6 +98,7 @@ void Screen::blank()
 	::XFillRectangle(
 		_x11.dpy, _x11.rootwin, gc, 0, 0, Screen::width(), Screen::height()
 	);
+
 	::XFlush( _x11.dpy );
 	::XFreeGC( _x11.dpy, gc);
 }
@@ -103,10 +108,6 @@ void Screen::close(Panel::Action action)
 //-----------------------------------------------------------------------------
 {
 	Screen::selectInput( false );
-
-	_panels->release( "InputPanel" );
-	_panels->release( "UsernamePanel" );
-	_panels->release( "PasswordPanel" );
 
 	::signal( SIGALRM, SIG_IGN );
 
@@ -132,14 +133,13 @@ void Screen::close(Panel::Action action)
 void Screen::open()
 //-----------------------------------------------------------------------------
 {
-	setBackground();
+	setBackground( "Background", _panels->getBackground() );
 
 	if (_config->getBool( "Session/use-default-on-logout" ))
 		_panels->resetSession();
 
-	_panels->show();
 	_panels->showClock();
-	_panels->focus( "UsernamePanel" );
+	_panels->showEnterMesg();
 }
 
 //-----------------------------------------------------------------------------
@@ -174,20 +174,34 @@ void Screen::mesg(Panel *panel, const std::string& text, int secs)
 {
 	if ( panel ) {
 		panel->showText( text );
+	}
 
-		if ( secs ) {
-			::signal( SIGALRM, Screen::clearmesg );
-			::alarm( secs );
-		}
+	if (secs > 0) {
+		secs = secs > 12 ? 12 : secs;
+		::signal( SIGALRM, Screen::clearmesg );
+		::alarm( secs );
 	}
 }
 
 //-----------------------------------------------------------------------------
-void Screen::setBackground() { setBackground( "Background" ); }
+void Screen::clearmesg(int sig)
+//-----------------------------------------------------------------------------
+{
+	signal(SIGALRM, SIG_IGN);
+	Screen::clear( "MesgPanel" );
+	Screen::tick(sig);
+}
+
+//-----------------------------------------------------------------------------
+bool Screen::testMode() { return _test_mode; }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void Screen::setBackground(const std::string& name)
+void Screen::setTestMode(bool flag) { _test_mode = flag; }
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void Screen::setBackground(const std::string& name, Imlib_Image bgimg)
 //-----------------------------------------------------------------------------
 {
 	Panel *panel = _panels->get( name );
@@ -196,13 +210,11 @@ void Screen::setBackground(const std::string& name)
 
 	if (Screen::session( Screen::X11 )) {
 
-		std::string mode( panel->drawmode() );
+		Imlib_Image img = bgimg ? bgimg : panel->image();
 		uint depth = DefaultDepth( _x11.dpy, _x11.screen );
+		std::string mode( panel->drawmode() );
 		std::string url( panel->spec() );
-		Imlib_Image img = panel->image();
 		Window wid = panel->window();
-
-		wid = wid ? wid : _x11.rootwin;
 
 		Pixmap pixmap = XCreatePixmap( _x11.dpy, wid, w, h, depth );
 
@@ -219,12 +231,23 @@ void Screen::setBackground(const std::string& name)
 		::XSync( _x11.dpy, false );
 
 		if (_x11.rootwin == wid) {
-			Imlib::release( img );
-			::XFreePixmap( _x11.dpy, pixmap );
-			panel->setImage( 0L );
+
 			_x11.rootpix = 0L;
-		}
-		else {
+			::XFreePixmap( _x11.dpy, pixmap );
+
+			if ( bgimg ) {
+				Imlib::release( bgimg );
+			}
+
+			/*
+			panel->setImage( 0L );
+			if (_x11.rootpix) {
+				::XFreePixmap( _x11.dpy, _x11.rootpix );
+				_x11.rootpix = pixmap;
+				panel->setPixmap( pixmap );
+			}
+			*/
+		} else {
 			::XFreePixmap( _x11.dpy, pixmap );
 		}
 	}
@@ -279,6 +302,10 @@ Window Screen::rootWindow() { return _x11.rootwin; }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+Pixmap Screen::rootPixmap() { return _x11.rootpix; }
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 Screen::FieldType Screen::field() { return _field; }
 //-----------------------------------------------------------------------------
 
@@ -292,8 +319,9 @@ void Screen::bell(int volume)
 		::XSync( _x11.dpy, true );
 	} else {
 	}
-	setName( std::string() );
-	setPassword( std::string() );
+
+	_panels->showUsername( std::string() );
+	_panels->showPassword( std::string() );
 }
 
 //-----------------------------------------------------------------------------
@@ -307,7 +335,7 @@ void Screen::sync()
 }
 
 //-----------------------------------------------------------------------------
-void Screen::setName(const std::string& name) { _panels->setName( name ); }
+void Screen::setName(const std::string& name) { _panels->setUsername( name ); }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -338,15 +366,6 @@ void Screen::disallow(int sig)
 //-----------------------------------------------------------------------------
 {
 	_nopasswd_halt = false;
-}
-
-//-----------------------------------------------------------------------------
-void Screen::clearmesg(int sig)
-//-----------------------------------------------------------------------------
-{
-	signal(SIGALRM, SIG_IGN);
-	Screen::clear( "MesgPanel" );
-	Screen::tick(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -423,7 +442,10 @@ void Screen::EventHandler(const Screen::FieldType& curfield)
 
 				switch ( event.type ) {
 					case Expose:
-						onExpose( event );
+						//onExpose( event );
+std::cerr << "X server Expose event.\n";
+std::cerr.flush();
+						_panels->showEnterMesg();
 					break;
 					case ButtonPress:
 						::gettimeofday( &_now, 0L );
@@ -450,7 +472,6 @@ void Screen::onExpose(XEvent& event)
 {
 	Panel *panel = _panels->get( event.xmotion.window );
 	if ( panel ) {
-		panel->clear();
 		panel->show();
 	}
 }
@@ -459,15 +480,11 @@ void Screen::onExpose(XEvent& event)
 bool Screen::onButtonRelease(XEvent& event)
 //-----------------------------------------------------------------------------
 {
-	int x = event.xmotion.x;
-	int y = event.xmotion.y;
-	Panel *panel = _panels->get( x, y );
+	Panel *panel = _panels->get( event.xmotion.x, event.xmotion.y );
 
 	if (panel && panel->isa( Panel::Button )) {
 
 		std::string name( panel->getName() );
-
-		panel->show();
 
 		if (name == "Login")
 			return secureLogin();
@@ -534,11 +551,9 @@ bool Screen::onButtonRelease(XEvent& event)
 bool Screen::onKeyPress(XEvent& event)
 //-----------------------------------------------------------------------------
 {
-	Panel *panel = _panels->get( event.xmotion.window );
+	//Panel *panel = _panels->get( event.xmotion.window );
 	XComposeStatus compstatus;
 	KeySym keysym;
-	std::string mesg;
-	std::string cmd;
 	char ascii;
 
 	XLookupString( &event.xkey, &ascii, 1, &keysym, &compstatus );
@@ -591,8 +606,7 @@ bool Screen::onKeyPress(XEvent& event)
 		case XK_Return:
 		case XK_KP_Enter:
 
-			if ((panel == _panels->get( "InputPanel" )))
-				panel->showText( std::string() );
+			_panels->showPassword( std::string() );
 
 			if (_field == Get_Name) {
 				std::string name( _panels->getName() );
@@ -601,9 +615,8 @@ bool Screen::onKeyPress(XEvent& event)
 					Screen::bell(100);
 					return true;
 				}
-
-				_panels->focus( "PasswordPanel" );
 #if 0
+				_panels->focus( "PasswordPanel" );
 				if (name == CONSOLE_STR) {
 					_action = Panel::Console;
 				} else
@@ -621,9 +634,10 @@ bool Screen::onKeyPress(XEvent& event)
 				} else {
 					_action = Panel::Login;
 				}
-			} else if (_field == Get_Passwd) {
-				_panels->focus( "UsernamePanel" );
+//		} else if (_field == Get_Passwd) {
+//			_panels->focus( "UsernamePanel" );
 			}
+
 			return false;
 
 		default:
@@ -632,7 +646,6 @@ bool Screen::onKeyPress(XEvent& event)
 
 	std::string password( _panels->getPassword() );
 	std::string name( _panels->getName() );
-	std::string hidden;
 
 	switch ( keysym ) {
 		case XK_Delete:
@@ -641,14 +654,14 @@ bool Screen::onKeyPress(XEvent& event)
 				case GET_NAME:
 					if ( !name.empty() ) {
 						name.erase( --name.end() );
-						panel->showText( name );
-						setName( name );
+						_panels->showUsername( name );
 					}
 				break;
 				case GET_PASSWD:
 					if ( !password.empty() ) {
 						password.erase( --password.end() );
-						panel->showText( hidden );
+						std::string hidden( password.length(), '*' );
+						_panels->showPassword( hidden );
 						setPassword( password );
 					}
 				break;
@@ -660,14 +673,12 @@ bool Screen::onKeyPress(XEvent& event)
 			if (reinterpret_cast<XKeyEvent&>(event).state & ControlMask) {
 				switch ( _field ) {
 					case Get_Name:
-						name.clear();
-						panel->showText( name );
-						setName( name );
+						_panels->showUsername( std::string() );
 					break;
 					case Get_Passwd:
 						password.clear();
-						panel->showText( hidden );
-						setPassword( password );
+						_panels->showPassword( std::string() );
+						setPassword( std::string() );
 					break;
 				}
 				break;
@@ -680,15 +691,14 @@ bool Screen::onKeyPress(XEvent& event)
 					case GET_NAME:
 						if (name.length() < INPUT_MAXLENGTH_USERNAME-1) {
 							name.append( &ascii, 1 );
-							panel->showText( name );
-							setName( name );
+							_panels->showUsername( name );
 						}
 					break;
 					case GET_PASSWD:
 						if (password.length() < INPUT_MAXLENGTH_PASSWORD-1) {
 							password.append( &ascii, 1 );
 							std::string hidden( password.length(), '*' );
-							panel->showText( hidden );
+							_panels->showPassword( hidden );
 							setPassword( password );
 						}
 					break;
@@ -696,6 +706,7 @@ bool Screen::onKeyPress(XEvent& event)
 			}
 		break;
 	}
+
 	return true;
 }
 
@@ -806,7 +817,11 @@ void Screen::stopServer(Panel::Action action)
 		return;
 	}
 
-	std::cerr << "X server slow to shut down, sending KILL signal.\n";
+	if ( testMode() ) {
+		std::cerr << "X server slow to shut down, sending KILL signal.\n";
+		std::cerr.flush();
+	}
+
 	errno = 0;
 
 	// Send KILL to server
@@ -835,7 +850,9 @@ int Screen::timeout(int delay, char* text)
 			break;
 
 		if ( delay ) {
-			std::cerr << "brzdm: waiting for " << text << "\n";
+			if ( testMode() ) {
+				std::cerr << "brzdm: waiting for " << text << "\n";
+			}
 			::sleep(1);
 		}
 
@@ -864,7 +881,10 @@ int Screen::waitForServer()
 		if (!timeout(1, (char*)"X server to begin accepting connections" ))
 			break;
 	}
+
 	std::cerr << "Giving up.\n";
+	std::cerr.flush();
+
 	return 0;
 }
 
@@ -890,13 +910,13 @@ int Screen::startServer(bool daemon_mode, bool fork_server)
 		_session_type = Screen::X11;
 	}
 
-	Brzdm::BRZDM->createServerAuth();
-
 	if ( fork_server ) {
+		Brzdm::BRZDM->createServerAuth();
 		errcode = forkServer( daemon_mode );
 	}
 
 	if (Screen::session( Screen::X11 )) {
+		errno = 0;
 
 		if ( !fork_server && !_x11.dpy ) {
 			_x11.dpy = XOpenDisplay( _dpy_name.c_str() );
@@ -926,11 +946,14 @@ int Screen::startServer(bool daemon_mode, bool fork_server)
 		createCursors();
 		selectInput( true );
 
-		std::cout << "Screen " << _screen_w << "x" << _screen_h << "+0+0\n";
-		std::cout.flush();
+		if ( testMode() ) {
+			std::cerr << "Opened dpy '" << _dpy_name.c_str() <<  "' -- " << strerror(errno) << "\n";
+			std::cerr << "Screen " << _screen_w << "x" << _screen_h << "+0+0\n";
+			std::cerr.flush();
+		}
+	} else {
 	}
-	else {
-	}
+
 	return errcode;
 }
 
@@ -986,8 +1009,10 @@ int Screen::forkServer(bool daemon_mode)
 
 	server[argc] = 0L;
 
-	for (int i=0; i < argc; i++)
-		std::cout << "X11/Xorg Arg[" << i << "]='" << server[i] << "'\n";
+	if ( testMode() ) {
+		for (int i=0; i < argc; i++)
+			std::cerr << "X11/Xorg Arg[" << i << "]='" << server[i] << "'\n";
+	}
 
 	_server_pid = fork();
 	_server_started = false;
@@ -1007,6 +1032,8 @@ int Screen::forkServer(bool daemon_mode)
 			execvp( server[0], server );
 
 			std::cerr << "X server could not be started\n";
+			std::cerr.flush();
+
 			::syslog( LOGFLAGS, "Unable to start display server !" );
 
 			std::exit( ERR_EXIT );
@@ -1060,9 +1087,9 @@ void Screen::clearArea(Window wid, int w, int h, int x, int y)
 		wid ? False : False
 	);
 
-	if (retcode != Success) {
-		std::cout << "Screen::clearText FAILED DRAW ERRCODE=" << retcode << " WID=" << wid << " " << w << "x" << h << "+" << x << "+" << y << "\n";
-		std::cout.flush();
+	if (retcode != Success && testMode()) {
+		std::cerr << "Screen::clearText FAILED DRAW ERRCODE=" << retcode << " WID=" << wid << " " << w << "x" << h << "+" << x << "+" << y << "\n";
+		std::cerr.flush();
 	}
 }
 
@@ -1117,6 +1144,7 @@ Window Screen::create(Window parent, int w, int h, int x, int y, uint inputmask,
 	return window;
 }
 
+#if 0
 //-----------------------------------------------------------------------------
 void Screen::grabKeyboard(Window window)
 //-----------------------------------------------------------------------------
@@ -1141,6 +1169,7 @@ void Screen::ungrabKeyboard()
 	} else {
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 int Screen::CatchErrors(Display *dpy, XErrorEvent *ev)

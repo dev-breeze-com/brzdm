@@ -62,6 +62,8 @@ protected:
 	//void setEnvironment(gid_t gid);
 	void setLocale(const std::string& optarg);
 
+	void send_session_id(::pid_t, const std::string& cookie);
+
 	bool verify(const std::string& progpath);
 
 	void updateWtmp(const std::string& username,

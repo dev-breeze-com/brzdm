@@ -1,9 +1,9 @@
 # - Try to find the NETTLE libraries
 # Once done this will define
 #
-#  NETTLE_FOUND - system has pam
-#  NETTLE_INCLUDE_DIR - the pam include directory
-#  NETTLE_LIBRARIES - libpam library
+#  NETTLE_FOUND - system has nettle
+#  NETTLE_INCLUDE_DIR - the nettle include directory
+#  NETTLE_LIBRARIES - libnettle library
 
 if (NETTLE_INCLUDE_DIR AND NETTLE_LIBRARY)
 	# Already in cache, be silent

@@ -14,6 +14,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -29,12 +30,10 @@ namespace breeze {
 void Imlib::init(::Display *dpy, Config *themecfg)
 //-----------------------------------------------------------------------------
 {
-	std::vector<std::string>::const_iterator it;
+	std::string fontlist( themecfg->get( "Fonts/paths" ));
 	std::vector<std::string> fonts;
 	struct stat pathbuf;
-
-	//::imlib_set_cache_size( 1024 * 1024 );
-	//::imlib_set_font_cache_size( 1024 * 1024 );
+	Config entries;
 
 	::imlib_context_set_display( dpy );
 	::imlib_set_color_usage(256);
@@ -45,19 +44,28 @@ void Imlib::init(::Display *dpy, Config *themecfg)
 	::imlib_context_set_dither(1);
 	::imlib_context_set_anti_alias( 1 );
 
-	std::string fontlist( themecfg->get( "Fonts/paths" ));
+	if (themecfg->getBool( "Session/hud" )) {
+		::imlib_set_cache_size( 2048 * 1024 );
+		::imlib_set_font_cache_size( 1024 * 1024 );
+	}
 
-	themecfg->split( fonts, fontlist, ':' );
+	if (fontlist.empty()) {
+		if (themecfg->get( "Fonts/", entries, true )) {
+			for (const auto& tuple: entries) {
+				fonts.push_back( tuple.first );
+			}
+		}
+	} else {
+		themecfg->split( fonts, fontlist, ':' );
+	}
 
 	::imlib_add_path_to_font_path( "/usr/share/imlib2/data/fonts" );
 
-	for (it = fonts.begin(); it != fonts.end(); it++) {
-		std::string fontpath( (*it) );
-
-		if (::lstat( fontpath.c_str(), &pathbuf ) == 0) {
-			::imlib_add_path_to_font_path( fontpath.c_str() );
+	for (const auto& path: fonts) {
+		if (::lstat( path.c_str(), &pathbuf ) == 0) {
+			::imlib_add_path_to_font_path( path.c_str() );
 		} else {
-			syslog( LOGFLAGS, "No such font path '%s'", fontpath.c_str() );
+			syslog( LOGFLAGS, "No such font path '%s'", path.c_str() );
 		}
 	}
 }
@@ -92,6 +100,23 @@ void Imlib::clear(Imlib_Image image)
 }
 
 //-----------------------------------------------------------------------------
+Imlib_Image Imlib::clone(Imlib_Image image)
+//-----------------------------------------------------------------------------
+{
+	::imlib_context_set_image( image );
+	return ::imlib_clone_image();
+}
+
+//-----------------------------------------------------------------------------
+void Imlib::save(Imlib_Image image, const std::string& path)
+//-----------------------------------------------------------------------------
+{
+	::imlib_context_set_image( image );
+	//::imlib_image_set_format( "PNG" );
+	::imlib_save_image( path.c_str() );
+}
+
+//-----------------------------------------------------------------------------
 int Imlib::width(Imlib_Image image)
 //-----------------------------------------------------------------------------
 {
@@ -114,12 +139,11 @@ int Imlib::height(Imlib_Image image)
 }
 
 //-----------------------------------------------------------------------------
-void Imlib::drawText(Imlib_Image image, const std::string& text, const std::string& fontspec, const RGBA& rgba, int x, int y, Imlib::Alignment alignment, Imlib_Text_Direction rtl)
+void Imlib::drawText(Imlib_Image image, const std::string& text, const std::string& fontspec, const RGBA& rgba, int& tw, int& th, Imlib::Alignment align, Imlib_Text_Direction rtl)
 //-----------------------------------------------------------------------------
 {
 	Imlib_Font font = ::imlib_load_font( fontspec.c_str() );
 	std::string fontname( fontspec );
-	int tw = 0, th = 0;
 
 	if ( ! font ) {
 		fontname = Utils::strlower( fontspec );
@@ -141,20 +165,27 @@ void Imlib::drawText(Imlib_Image image, const std::string& text, const std::stri
 	::imlib_context_set_font( font );
 	::imlib_get_text_size( text.c_str(), &tw, &th );
 
+#if 0
+	::imlib_text_draw( 0, 0, text.c_str() );
+#endif
+
 	int w = ::imlib_image_get_width();
 	int h = ::imlib_image_get_height();
 
-	if (alignment == Imlib::CENTER) {
+	if (align == Imlib::CENTER) {
 		::imlib_text_draw( (w-tw)/2, (h-th)/2, text.c_str() );
-	} else if (alignment == Imlib::LEFT) {
-		::imlib_text_draw( 5, (h-th)/2, text.c_str() );
-	} else if (alignment == Imlib::RIGHT) {
+	} else if (align == Imlib::RIGHT) {
 		::imlib_text_draw( (w-tw)-5, (h-th)/2, text.c_str() );
-	} else if (x < 0 && y < 0) {
-		::imlib_text_draw( (w-tw)/2, (h-th)/2, text.c_str() );
+	//} else if (align == Imlib::LEFT) {
+	//	::imlib_text_draw( 5, (h-th)/2, text.c_str() );
+	//} else if (x < 0 && y < 0) {
+	//	::imlib_text_draw( (w-tw)/2, (h-th)/2, text.c_str() );
     } else {
-		::imlib_text_draw( x, y, text.c_str() );
+		::imlib_text_draw( 1, 0, text.c_str() );
+		//::imlib_text_draw( (w-tw)/2, (h-th)/2, text.c_str() );
+		//::imlib_text_draw( x, y, text.c_str() );
 	}
+
 	::imlib_free_font();
 }
 
@@ -163,11 +194,12 @@ void Imlib::draw(Imlib_Image image, Drawable win, int x, int y, int blend, RGBA 
 //-----------------------------------------------------------------------------
 {
 	::imlib_context_set_image( image );
-	::imlib_context_set_drawable( win );
+	::imlib_image_set_has_alpha( 1 );
 	::imlib_context_set_blend( blend );
+	::imlib_context_set_drawable( win );
 
-	//std::cout << "Imlib::draw X=" << x << " Y=" << y << "\n";
-	//std::cout.flush();
+	//std::cerr << "Imlib::draw X=" << x << " Y=" << y << "\n";
+	//std::cerr.flush();
 
 	if ( rgba ) {
 		::imlib_context_set_color( rgba->r, rgba->g, rgba->b, rgba->a );
@@ -191,11 +223,31 @@ void Imlib::draw(Imlib_Image image, Drawable win, int x, int y, int blend, RGBA 
 }
 
 //-----------------------------------------------------------------------------
+void Imlib::blend(Imlib_Image image, Imlib_Image win, int x, int y, int blend)
+//-----------------------------------------------------------------------------
+{
+	int w = Imlib::width( win );
+	int h = Imlib::height( win );
+
+	::imlib_context_set_image( image );
+	::imlib_image_set_has_alpha( 1 );
+	::imlib_context_set_blend( blend );
+
+	/*
+	if ( rgba ) {
+		::imlib_context_set_color( rgba->r, rgba->g, rgba->b, rgba->a );
+	}
+	*/
+	::imlib_blend_image_onto_image( win, 1, 0, 0, w, h, x, y, w, h );
+}
+
+//-----------------------------------------------------------------------------
 void Imlib::scale(Imlib_Image image, Drawable win, int w, int h, int x, int y, int blend)
 //-----------------------------------------------------------------------------
 {
 	::imlib_context_set_image( image );
 	::imlib_context_set_drawable( win );
+	::imlib_image_set_has_alpha( 1 );
 	::imlib_context_set_blend( blend );
 	::imlib_render_image_on_drawable_at_size( x, y, w, h );
 }
@@ -248,8 +300,8 @@ Imlib_Image Imlib::gradient(Imlib_Image image, const std::string& gradtype, cons
 	::imlib_context_set_color( ergba.r, ergba.g, ergba.b, ergba.a );
 	::imlib_add_color_to_color_range(5);
 
-std::cout << "Imlib::gradient IMG=" << image << " '" << gradtype << "'\n";
-std::cout.flush();
+//std::cerr << "Imlib::gradient IMG=" << image << " '" << gradtype << "'\n";
+//std::cerr.flush();
 
 	if (gradtype == "vertical") {
 		::imlib_image_fill_color_range_rectangle( 0, 0, w, h, 0.0 );
@@ -260,9 +312,10 @@ std::cout.flush();
 
 		Utils::strdel( mode, "!" );
 		float degrees = Config::string2float( mode, 0L );
-std::cout << "Imlib::gradient '" << gradtype << "' degrees=" << degrees << "\n";
+//std::cerr << "Imlib::gradient '" << gradtype << "' degrees=" << degrees << "\n";
 		::imlib_image_fill_color_range_rectangle( 0, 0, w, h, degrees );
 	}
+
 	::imlib_free_color_range();
 	return image;
 }
@@ -271,10 +324,10 @@ std::cout << "Imlib::gradient '" << gradtype << "' degrees=" << degrees << "\n";
 Imlib_Image Imlib::rectangle(Imlib_Image image, const RGBA& rgba, int w, int h, bool shadow)
 //-----------------------------------------------------------------------------
 {
-	image = image ? image : create( w, h );
+	image = image ? image : ::imlib_create_image( w, h );
 
 /*
-std::cout << "Imlib::rectangle IMG=" << image << " W=" << w << " H=" << h << "\n";
+std::cerr << "Imlib::rectangle IMG=" << image << " W=" << w << " H=" << h << "\n";
 
 ::fprintf( stdout,
 	"Imlib::rectangle R=0x%x G=0x%x B=0x%x A=0x%x\n",
@@ -283,6 +336,8 @@ std::cout << "Imlib::rectangle IMG=" << image << " W=" << w << " H=" << h << "\n
 */
 
 	::imlib_context_set_image( image );
+	::imlib_image_set_has_alpha(1);
+	::imlib_context_set_blend(1);
 	::imlib_context_set_color( rgba.r, rgba.g, rgba.b, rgba.a );
 	::imlib_image_fill_rectangle( 0, 0, w, h );
 
@@ -293,7 +348,25 @@ std::cout << "Imlib::rectangle IMG=" << image << " W=" << w << " H=" << h << "\n
 Imlib_Image Imlib::create(int w, int h, bool shadow)
 //-----------------------------------------------------------------------------
 {
-	return ::imlib_create_image( w, h );
+	Imlib_Image image = ::imlib_create_image( w, h );
+	::imlib_context_set_image( image );
+	::imlib_image_set_has_alpha(1);
+	::imlib_context_set_blend(1);
+	return image;
+}
+
+//-----------------------------------------------------------------------------
+Imlib_Image Imlib::set(Imlib_Image image, const std::string& imgstr)
+//-----------------------------------------------------------------------------
+{
+	struct stat buf;
+
+	if (!::lstat( imgstr.c_str(), &buf )) {
+		::imlib_context_set_image( image );
+		return ::imlib_load_image_immediately_without_cache( imgstr.c_str() );
+	}
+
+	return image;
 }
 
 //-----------------------------------------------------------------------------
@@ -316,7 +389,7 @@ Imlib_Image Imlib::load(const std::string& path, bool with_cache)
 //-----------------------------------------------------------------------------
 {
 	struct stat buf;
-	//std::cout << path << "\n";
+	//std::cerr << path << "\n";
 
 	if (::lstat( path.c_str(), &buf ))
 		return 0L;
@@ -342,7 +415,7 @@ Imlib_Image Imlib::loadSized(const std::string& folder, const std::string& forma
 		format.c_str()
 	);
 
-	//std::cout << "loadSized: '" << path << "'\n";
+	//std::cerr << "loadSized: '" << path << "'\n";
 
 	if (::lstat( path, &buf ) == 0)
 		return Imlib::load( path );

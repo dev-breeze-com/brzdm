@@ -27,15 +27,16 @@ INTRODUCTION
    - Themes with INI-like configuration
    - PNG support with alpha transparency
    - PNG / JPEG support for backgrounds
+   - Wallpaper selection for backgrounds
    - XFT / freetype support
-   - Double or single inputbox support
-   - Keyutils authentication support
-   - Secure auto-login support
-   - User Photo Panel support
+   - Double inputbox support
    - Time Clock Panel support
    - CMake build procedure
    - Wayland support (planned)
    - Kiosk support (planned)
+   - Keyutils support (planned)
+   - User Photo Panel support (planned)
+   - Secure auto-login support (planned)
 
 
 PREREQUISITES
@@ -59,10 +60,11 @@ USAGE
   To launch brzdm, execute the brzdm binary, Use the -d option
   if you want it to run as a daemon in the background.
 
-  Enter username and password to login. The desktop file must reside
-  at /etc/X11/xinit/xinitrc.%desktop; and, is executed by default.
-  The folder /usr/share/xsessions is used by default; and, the
-  sessions entry is used for ordering the list of desktops.
+  Enter username and password to login. The desktop file can be
+  either /etc/X11/xinit/xinitrc.%desktop or /etc/X11/Sessions/%desktop;
+  and, is executed by default. The folder /usr/share/xsessions is
+  used by default; and, the sessions entry is used for ordering the
+  list of desktops.
 
   Special usernames (commands configurable in the config file):
   
@@ -100,23 +102,19 @@ INSTALLATION
   execute "sudo make install". See the INSTALL file
 
 
-KNOWN BUGS
-==========
-
-  There an unresolved font access problem, when running on 64-bit machines.
-
-
 BUGS
 ====
 
-  Bug reports, patches and suggestions are much appreciated.
-  See the GitHub account https://dev-breeze-com.github.io/brzdm/
+  Debian-based installations may run into problems when configuring.  
+  An unresolved font access problem, when running on 64-bit machines.  
+  Bug reports, patches and suggestions are much appreciated.  
+  See the GitHub account https://dev-breeze-com.github.io/brzdm
 
 
 COPYRIGHT
 =========
 
-  Brzdm is copyright (c) 2015 Tsert.Inc, All rights reserved  
+  Brzdm is copyright (c) 2015 Pierre Innocent, All rights reserved  
   licensed through the GNU General Public License V3.0. 
 
   Slim is copyright (c) 2004-06 by Simone Rota, Johannes Winkelmann,

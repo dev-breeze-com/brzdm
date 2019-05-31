@@ -26,6 +26,7 @@
 #include "utils.h"
 #include "imlib.h"
 #include "const.h"
+#include "qrcode.h"
 
 #ifdef HAVE_SHADOW
 #include <shadow.h>
@@ -45,21 +46,104 @@ App::~App()
 }
 
 //-----------------------------------------------------------------------------
+void App::printQRCode()
+//-----------------------------------------------------------------------------
+{
+	std::cout << "QR-Code: " << qrcode::url << "\n\n";
+
+	for (int i=0; i<qrcode::utf8length; i++)
+		//fprintf( stdout, "%c", qrcode::utf8data[i] );
+		std::cout << qrcode::utf8data[i];
+
+	std::cout.flush();
+}
+
+//-----------------------------------------------------------------------------
+void App::printUsage()
+//-----------------------------------------------------------------------------
+{
+	std::cout << "Usage: brzdm [option ...]\n"
+		<< "Options:\n"
+		<< "    -#: show QR code\n"
+		<< "    -d: daemon mode\n"
+		<< "    -D: display name\n"
+		<< "    -c: configuration file\n"
+		<< "    -s: secure mode\n"
+		<< "    -t: test your theme\n"
+		<< "    -T: use specified theme\n"
+		<< "    -B: use specified background\n"
+		<< "    -S: Do not exec display server\n"
+		<< "    -N: Do not force restart (rc.4 mode)\n"
+		<< "    -v: show version\n";
+	std::cout.flush();
+}
+
+//-----------------------------------------------------------------------------
 App::App(int argc, char** argv) : _mcookiesize(32) /* Must be divisible by 4 */
 //-----------------------------------------------------------------------------
 {
 	std::string cfgfile( "/etc/brzdm.conf" );
+	std::string theme;
 	int opt = 0;
 
+	_test_mode = false;
 	_fork_server = true;
 	_first_login = true;
 	_secure_mode = false;
 	_daemon_mode = false;
-	_force_nodaemon = false;
+
 	_nopasswd_reboot = false;
 	_nopasswd_shutdown = false;
 
 	_mcookie = std::string( _mcookiesize, 'a' );
+
+	while ((opt = ::getopt(argc, argv, "#NShsvtB:D:T:c:d?")) != EOF) {
+		switch ( opt) {
+			case 'B':
+				_background = optarg;
+			break;
+			case 'D':
+				_dpy_name = optarg;
+			break;
+			case 'T':
+				theme = optarg;
+			break;
+			case 'c':
+				cfgfile = optarg;
+			break;
+			case 't':
+				_test_mode = true;
+			break;
+			case 'd':
+				_daemon_mode = true;
+			break;
+			case 'N':
+				_force_restart = false;
+			break;
+			case 'S':
+				_fork_server = false;
+			break;
+			case 's':
+				_secure_mode = true;
+			break;
+			case 'v':
+				std::cout << "brzdm: v1.2.0 (c) 2015 Pierre Innocent\n";
+				std::exit(OK_EXIT);
+
+			case '#':
+				printQRCode();
+				std::exit(OK_EXIT);
+
+			case '?':
+			case 'h':
+				printUsage();
+				std::exit(OK_EXIT);
+
+			default:
+				std::cerr << "Invalid option !\n";
+			break;
+		}
+	}
 
 	_panels = new Panels();
 	_config = new Config();
@@ -70,62 +154,18 @@ App::App(int argc, char** argv) : _mcookiesize(32) /* Must be divisible by 4 */
     ::chown( "/var/lib/brzdm/", BRZDM_UID, BRZDM_GID );
 #endif
 
-	while ((opt = ::getopt(argc, argv, "NSsvhD:c:n:d?")) != EOF) {
-		switch (opt) {
-			case 'c':	/* Config file */
-				cfgfile = optarg;
-			break;
-			case 'd':	/* Daemon mode */
-				_daemon_mode = true;
-			break;
-			case 'N':	/* No restart mode */
-				_force_restart = false;
-			break;
-			case 'n':	/* No Daemon mode */
-				_daemon_mode = false;
-				_force_nodaemon = true;
-			break;
-			case 'S':	/* Server forked */
-				_fork_server = false;
-			break;
-			case 'D':	/* Secure mode */
-				_dpy_name = optarg;
-			break;
-			case 's':	/* Secure mode */
-				_secure_mode = true;
-			break;
-			case 'v':	/* Version */
-				std::cout << "brzdm: v1.0.0 (c) 2015 Tsert.Inc\n";
-				std::exit(OK_EXIT);
-			break;
-			case '?':
-			case 'h':   /* Help */
-				std::cerr << "usage: brzdm [option ...]\n"
-				<< "options:\n"
-				<< "	-d: daemon mode\n"
-				<< "	-D: display name\n"
-				<< "	-c: use specified config file\n"
-				<< "	-s: secure mode\n"
-				<< "	-S: skip exec display server\n"
-				<< "	-n: no-daemon mode\n"
-				<< "	-N: no-restart mode (rc.4 mode)\n"
-				<< "	-v: show version\n";
-				std::exit(OK_EXIT);
-
-			default:
-				std::cerr << "Illegal !\n";
-			break;
-		}
-	}
+	Screen::setTestMode( _test_mode );
 
 	openLog();
 
 	if (getuid() != 0) {
+		std::cerr << "Only root can run this program\n";
 		::syslog( LOGFLAGS, "Only root can run this program" );
 		std::exit(ERR_EXIT);
 	}
 
 	if (! _config->load( cfgfile )) {
+		std::cerr << "Could not load config file " << cfgfile << " !\n";
 		::syslog(LOGFLAGS, "Could not load config file '%s'!", cfgfile.c_str());
 		std::exit(ERR_EXIT);
 	}
@@ -133,11 +173,17 @@ App::App(int argc, char** argv) : _mcookiesize(32) /* Must be divisible by 4 */
 	_nopasswd_reboot = _config->getBool( "Allow/reboot" );
 	_nopasswd_shutdown = _config->getBool( "Allow/shutdown" );
 
-	loadTheme( _config->get( "theme" ));
+	if ( theme.empty() ) {
+		theme = _config->get( "theme" );
+	}
+
+	loadTheme( theme );
 
 	if ( !_secure_mode ) {
 		_secure_mode = _config->getBool( "secure" );
 	}
+
+	_bg_file = _background;
 }
 
 //-----------------------------------------------------------------------------
@@ -145,18 +191,16 @@ bool App::secureMode() const { return _secure_mode; }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-bool App::noPasswdReboot() const
+bool App::testMode() const { return _test_mode; }
 //-----------------------------------------------------------------------------
-{
-	return _nopasswd_reboot;
-}
 
 //-----------------------------------------------------------------------------
-bool App::noPasswdShutdown() const
+bool App::noPasswdReboot() const { return _nopasswd_reboot; }
 //-----------------------------------------------------------------------------
-{
-	return _nopasswd_shutdown;
-}
+
+//-----------------------------------------------------------------------------
+bool App::noPasswdShutdown() const { return _nopasswd_shutdown; }
+//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 bool App::noPasswdHalt() const
@@ -194,6 +238,7 @@ void App::loadTheme(const std::string& name)
 			::syslog( LOGFLAGS, "Failed to open default theme file !" );
 			std::exit(ERR_EXIT);
 		}
+
 		::syslog( LOGFLAGS, "Invalid theme '%s'", theme.c_str() );
 		theme = "default";
 	}
@@ -263,7 +308,7 @@ bool App::authenticateUser(bool focuspass)
 #endif
 
 	if (correct == 0 || correct[0] == '\0')
-		return true;
+		return false;
 
 	password = _panels->getPassword();
 	encrypted = ::crypt( password.c_str(), correct );
@@ -341,6 +386,7 @@ void App::updatePid()
 		::syslog( LOGFLAGS, "Could not update lock file !" );
 		std::exit( ERR_EXIT );
 	}
+
 	lockfile << getpid() << "\n";
 	lockfile.close();
 }
@@ -359,6 +405,7 @@ void App::getLock()
 			::syslog( LOGFLAGS, "Could not create lock file !" );
 			std::exit(ERR_EXIT);
 		}
+
 		lockfile << getpid() << "\n";
 		lockfile.close();
 	}
@@ -385,6 +432,7 @@ void App::getLock()
 				::syslog( LOGFLAGS, "Could not create new lock file !" );
 				std::exit(ERR_EXIT);
 			}
+
 			lockfile << getpid() << "\n";
 			lockfile.close();
 		}

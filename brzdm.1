@@ -21,9 +21,21 @@ Brzdm selects desktop sessions using \fI/usr/share/xsessions\fP, \fI/etc/X11/xin
 Run as a daemon.
 .TP
 
+\fB-B\fP
+Use specified background to override the theme's default.
+.TP
+
+\fB-T\fP
+Use specified theme.
+.TP
+
+\fB-t\fP
+Test your theme.
+.TP
+
 .B
-\fB-n\fP
-Run in no daemon mode.
+\fB-S\fP
+Run without exec-ing displsy server.
 .TP
 
 .B
@@ -52,6 +64,10 @@ Display a brief help message
 .TP
 
 .B
+\fB-#\fP
+Display the application QR-code
+
+.B
 \fB-v\fP
 Display version information
 
@@ -69,7 +85,11 @@ brzctl start displaymgr
 .PP
 For installations with \fBopenrc\fP as the \fBinit.d service manager\fP; issue the following commands:
 .IP
-rc-update xdm brzdm
+sed -ire 's/^DISPLAYMANAGER=.*$/DISPLAYMANAGER="brzdm"/g' /etc/conf.d/xdm
+.IP
+.IP
+rc-update add xdm default
+.IP
 .IP
 rc-update start xdm
 .IP
@@ -98,10 +118,6 @@ Reboot your computer.
 F7 -- suspend
 Power-suspend your computer,
 (unsafe, unless your computer is properly configured)
-.TP
-.B
-F8 -- console
-Open an xterm console.
 .PP
 See the config file for customizing the 'halt', 'reboot', and 'suspend' commands, as they require the \fBroot\fP password.
 .PP

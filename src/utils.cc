@@ -8,6 +8,7 @@
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
 //
+#include <uuid/uuid.h>
 #include <nettle/md5.h>
 #include <nettle/sha.h>
 #include <nettle/base16.h>
@@ -33,9 +34,7 @@ std::string Utils::_mountpoint;
 void Utils::init(const std::string& app, const std::string& version)
 //-----------------------------------------------------------------------------
 {
-	//struct passwd *uids = ::getpwuid( ::geteuid() );
 	char *ccwd = ::get_current_dir_name();
-	//struct utsname utsbuf;
 	ChronoTime now;
 
 	_app = app;
@@ -47,6 +46,7 @@ void Utils::init(const std::string& app, const std::string& version)
 	_mountpoint = "/var/mnt/media/";
 
 	::gettimeofday( &now, 0L );
+
     ::srandom( now.tv_sec + now.tv_usec );
 
 	::free( ccwd );
@@ -62,9 +62,9 @@ std::string Utils::strlower(const std::string& str)
 {
 	std::string lstr( str );
 
-	for (std::string::iterator it = lstr.begin(); it != lstr.end(); it++) {
-		(*it) = std::tolower( (*it) );
-	}
+	for (auto& chr: lstr)
+		chr = std::tolower( chr );
+
 	return lstr;
 }
 
@@ -135,9 +135,8 @@ std::string Utils::hash(const std::string& path, HashType algo)
 		::md5_digest( &ctxmd5, MD5_DIGEST_SIZE, (uint8_t*) digest );
 
 		hash.assign( digest, MD5_DIGEST_SIZE );
-	}
-	else
-	if (algo == SHA1_algo) {
+
+	} else if (algo == SHA1_algo) {
 
 		::sha1_init( &ctxsha1 );
 
@@ -147,9 +146,8 @@ std::string Utils::hash(const std::string& path, HashType algo)
 		::sha1_digest( &ctxsha1, SHA1_DIGEST_SIZE, (uint8_t*) digest );
 
 		hash.assign( digest, SHA1_DIGEST_SIZE );
-	}
-	else
-	if (algo == SHA256_algo) {
+
+	} else if (algo == SHA256_algo) {
 
 		::sha256_init( &ctx256 );
 
@@ -159,9 +157,8 @@ std::string Utils::hash(const std::string& path, HashType algo)
 		::sha256_digest( &ctx256, SHA256_DIGEST_SIZE, (uint8_t*) digest );
 
 		hash.assign( digest, SHA256_DIGEST_SIZE );
-	}
-	else
-	if (algo == SHA512_algo) {
+
+	} else if (algo == SHA512_algo) {
 
 		::sha512_init( &ctx512 );
 
@@ -173,11 +170,15 @@ std::string Utils::hash(const std::string& path, HashType algo)
 		hash.assign( digest, SHA512_DIGEST_SIZE );
 	}
 
-	for (std::string::const_iterator it = hash.begin(); it != hash.end(); it++) {
-		::base16_encode_single( (uint8_t*) hexstr, (uint8_t) (*it) );
+	for (const auto& chr: hash) {
+#if defined(NETTLE_LESSER)
+		::base16_encode_single((uint8_t*)hexstr, chr );
+#else
+		::base16_encode_single(hexstr, chr );
+#endif
 		hashed.append( hexstr, 2 );
 	}
-	//std::cout << path << " " << hashed << "\n";
+
 	return hashed;
 }
 
@@ -192,11 +193,13 @@ bool Utils::add_mcookie(const std::string &mcookie, const std::string& display,
 {
 	std::string cmd( xauth_cmd + " -f " + authfile + " -v" );
 
+	/*
 	std::cout << "MCOOKIE='" << mcookie << "'\n";
 	std::cout << "XAUTH_CMD='" << xauth_cmd << "'\n";
 	std::cout << "DISPLAY='" << display << "'\n";
 	std::cout << "AUTHFILE='" << authfile << "'\n";
 	std::cout.flush();
+	*/
 
 	FILE *fptr = ::popen( cmd.c_str(), "w" );
 
@@ -206,6 +209,7 @@ bool Utils::add_mcookie(const std::string &mcookie, const std::string& display,
 		fprintf(fptr, "exit\n");
 		::pclose(fptr);
 	}
+
 	return fptr != 0L;
 }
 
@@ -255,9 +259,8 @@ std::string Utils::strrepl(const std::string& text, const std::string& pattern, 
 void Utils::strzap(std::string& s)
 //-----------------------------------------------------------------------------
 {
-	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
-		(*it) = ' ';
-	}
+	for (auto& chr: s) { chr = '0'; }
+	s.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -322,6 +325,25 @@ uint Utils::elapsedMSecs(const struct timeval& then)
 	elapsed /= 1000;
 
 	return elapsed;
+}
+
+//-----------------------------------------------------------------------------
+std::string Utils::get_uuid(bool macaddr)
+//-----------------------------------------------------------------------------
+{
+	char buffer[ 128 ]={ '\0' };
+
+	::uuid_t uuid = { 0 };
+
+	if ( macaddr ) {
+		::uuid_generate_time( uuid );
+	} else {
+		::uuid_generate( uuid );
+	}
+
+	::uuid_unparse_lower( uuid, buffer );
+
+	return std::string( buffer );
 }
 
 };

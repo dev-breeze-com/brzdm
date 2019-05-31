@@ -59,7 +59,8 @@ public:
 	void set(const std::string& key, const std::string& value);
 	void set(const std::string& prefix, const Config& entries);
 
-	void split(std::vector<std::string>& v, const std::string& key, char c);
+	void splitKey(std::vector<std::string>& v, const std::string& key, char c);
+	void split(std::vector<std::string>& v, const std::string& text, char c);
 
 	bool load(const std::string& url);
 
@@ -71,8 +72,8 @@ public:
 
 public:
 	static bool string2bool(const std::string& str);
-	static float string2float(const std::string& str, bool* ok);
-	static int string2int(const std::string& str, bool* ok);
+	static float string2float(const std::string& str, bool* ok=0L);
+	static int string2int(const std::string& str, bool* ok=0L);
 	static int percent2int(const std::string& str, int total);
 
 protected:

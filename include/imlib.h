@@ -30,6 +30,8 @@ typedef struct RGBA { uint r; uint g; uint b; uint a; uint gradient; } RGBA;
 
 class Imlib {
 public:
+	enum Alignment { NOALIGN=0, CENTER, RIGHT, LEFT };
+
 	enum GradientType {
 		LINEAR		= 0x0001,
 		CIRCULAR	= 0x0002,
@@ -44,13 +46,6 @@ public:
 		TILE	= 0x0002
 	};
 
-	enum Alignment {
-		NOALIGN	= 0x0000,
-		CENTER	= 0x0001,
-		RIGHT	= 0x0002,
-		LEFT	= 0x0004
-	};
-
 private:
 	Imlib() {}
 	Imlib(const Imlib&) {}
@@ -61,20 +56,24 @@ public:
 	static void init(::Display *dpy, Config *themecfg);
 
 	static void release();
-	static void release(Imlib_Image image);
-	static void clear(Imlib_Image image);
+	static void release(Imlib_Image);
+	static void clear(Imlib_Image);
 
-	static int width(Imlib_Image image);
-	static int height(Imlib_Image image);
+	static int width(Imlib_Image);
+	static int height(Imlib_Image);
 
 	//static bool merge(Imlib_Image dest, Imlib_Image src, int x, int y);
 
 	static void setRGBA(const std::string& rgba, RGBA *rgb);
 
-	static Imlib_Image rectangle(Imlib_Image image, const RGBA& rgb,
+	static void save(Imlib_Image, const std::string& imgstr);
+
+	static Imlib_Image clone(Imlib_Image);
+
+	static Imlib_Image rectangle(Imlib_Image, const RGBA& rgb,
 		int w, int h, bool shadow=false);
 
-	static Imlib_Image gradient(Imlib_Image image, const std::string& gradtype,
+	static Imlib_Image gradient(Imlib_Image, const std::string& gradtype,
 		const RGBA& srgb, const RGBA& ergb, int w=0, int h=0);
 
 	static Imlib_Image create(int w, int h, bool shadow=false);
@@ -82,21 +81,25 @@ public:
 	static Imlib_Image create(const std::string& path, int w=0, int h=0,
 		bool shadow=false, bool with_cache=false);
 
+	static Imlib_Image set(Imlib_Image, const std::string& imgstr);
+
 	static Imlib_Image load(const std::string& path, bool with_cache=false);
 
 	static Imlib_Image loadSized(const std::string& folder,
 		const std::string& format);
 
-	static void drawText(Imlib_Image image,
-		const std::string& text, const std::string& font,
-		const RGBA& rgba, int x, int y, Imlib::Alignment=Imlib::LEFT,
-		Imlib_Text_Direction=IMLIB_TEXT_TO_RIGHT);
+	static void blend(Imlib_Image, Imlib_Image win, int x, int y, int blend=1);
 
-	static void draw(Imlib_Image image, ::Drawable win,
+	static void draw(Imlib_Image, ::Drawable win,
 		int x=0, int y=0, int blend=1, RGBA *rgba=0L);
 
-	static void scale(Imlib_Image image, ::Drawable win,
+	static void scale(Imlib_Image, ::Drawable win,
 		int w, int h, int x=0, int y=0, int blend=1);
+
+	static void drawText(Imlib_Image,
+		const std::string& text, const std::string& font,
+		const RGBA& rgba, int& tw, int& th, Imlib::Alignment=Imlib::LEFT,
+		Imlib_Text_Direction=IMLIB_TEXT_TO_RIGHT);
 
 };
 

@@ -96,7 +96,17 @@ opacity=70%
 # PhotoPanel, ClockPanel,
 #
 [Fonts]
-paths=/usr/share/fonts/TTF/:/usr/share/fonts/truetype/freefont/:/usr/share/fonts/truetype/ttf-dejavu/:/usr/share/fonts/truetype/ttf-liberation/:/usr/share/fonts/75dpi/:/usr/share/fonts/100dpi/
+/usr/share/fonts/TTF/
+/usr/share/fonts/truetype/freefont/
+/usr/share/fonts/truetype/ttf-dejavu/
+/usr/share/fonts/truetype/ttf-liberation/
+/usr/share/fonts/truetype/ttf-dejavu/
+/usr/share/fonts/75dpi/
+/usr/share/fonts/100dpi/
+/usr/share/fonts/freefont/
+/usr/share/fonts/dejavu/
+/usr/share/fonts/terminus/
+/usr/share/fonts/liberation-fonts/
 [/Fonts]
 
 [Background]

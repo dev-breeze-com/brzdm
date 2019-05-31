@@ -105,6 +105,8 @@ public:
 
 	static std::string dateString(const std::string& format, std::time_t=0);
 
+	static std::string get_uuid(bool macaddr=false);
+
 	static bool add_mcookie(const std::string &mcookie,
 		const std::string& display, const std::string &xauth_cmd,
 		const std::string &authfile);

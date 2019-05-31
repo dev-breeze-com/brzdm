@@ -161,12 +161,14 @@ bool Brzdm::setGroups(const std::string& username)
 
 	if (getgrouplist( username.c_str(), gid, groups, &ngroups ) > 0) {
 		setgroups( ngroups, groups );
-		for (i = 0; i < ngroups; i++) {
+
+		for (i = 0; i < ngroups; i++)
 			fprintf( stderr, "brzdm: GROUP[%d]=%d\n", i, groups[i] );
-		}
+
 		fprintf( stderr, "brzdm: errno '%s'\n", strerror( errno ));
 		fflush( stderr );
 	}
+
 	delete [] groups;
 	return doSetuid( username );
 }
@@ -265,6 +267,7 @@ Brzdm::Brzdm(int argc, char **argv) : App( argc, argv )
 	setenv( "PS1", "\\u@\\h:\\w\\$", true );
 	setenv( "LIBXCB_ALLOW_SLOPPY_LOCK", "1", true );
 	setenv( "PATH", BINPATH, true );
+	setenv( "DISPLAY_MANAGER", "brzdm", true );
 
 #if defined( USE_BRZDM_UID )
 	if (doSetuid( "brzdm" )) {
@@ -274,12 +277,9 @@ Brzdm::Brzdm(int argc, char **argv) : App( argc, argv )
 #endif
 
 	if (_config->get( "Env", envvars, true )) {
-
-		Config::const_iterator it = envvars.begin();
-
-		for (; it != envvars.end(); it++) {
-			std::string key( (*it).first );
-			std::string val( (*it).second ); 
+		for (const auto& tuple: envvars) {
+			std::string key( tuple.first );
+			std::string val( tuple.second ); 
 			setenv( key.c_str(), val.c_str(), true );
 		}
 	}
@@ -310,12 +310,12 @@ void Brzdm::restart()
 void Brzdm::run()
 //-----------------------------------------------------------------------------
 {
+	std::string wallpaper( _config->get( "wallpaper" ));
 	std::string numlock( _config->get( "numlock" ));
-	std::string::size_type pos;
 	std::string username;
 	Panel::Action action;
 
-	App::getLock();
+	//App::getLock();
 
 	::setenv( "DISPLAY", Screen::displayName(), true );
 
@@ -327,29 +327,45 @@ void Brzdm::run()
 	::signal( SIGPIPE, Brzdm::CatchSignal );
 	::signal( SIGUSR1, Brzdm::User1Signal );
 
-	if ( !_force_nodaemon && _config->getBool( "daemon" ))
-		_daemon_mode = true;
-
-	if ( _daemon_mode ) {
-		if (::daemon( 0, 1 ) < 0) {
-			::syslog( LOGFLAGS, "%s", strerror( errno ));
-			std::exit(ERR_EXIT);
-		}
-		App::updatePid();
+	if ( _background.empty() ) {
+		_bg_file = wallpaper;
 	}
 
 	Screen::init( _config, _panels, _dpy_name );
-	Screen::startServer( _daemon_mode, _fork_server );
 
-	Screen::killAllClients( false );
-	Screen::killAllClients( true );
+	if ( testMode() ) {
+		Screen::startServer( false, false );
+
+	} else {
+
+		_daemon_mode = _daemon_mode || _config->getBool( "daemon" );
+
+		if ( _daemon_mode ) {
+			if (::daemon( 0, 1 ) < 0) {
+				::syslog( LOGFLAGS, "%s", strerror( errno ));
+				std::exit(ERR_EXIT);
+			}
+
+			::syslog( LOGFLAGS, "Now in daemon mode !\n" );
+			App::updatePid();
+		}
+
+		Screen::startServer( _daemon_mode, _fork_server );
+
+		Screen::killAllClients( false );
+		Screen::killAllClients( true );
+	}
 
 	_dpy = Screen::display();
 	_dpy_name = Screen::displayName();
 
 	Imlib::init( _dpy, _config );
 
-	if (! _panels->load( _config )) {
+	if (! _panels->load( _config, _bg_file )) {
+		if ( testMode() ) {
+			std::fprintf( stdout, "Could not load panels !\n" );
+		}
+
 		::syslog( LOGFLAGS, "Could not load panels !\n" );
 		terminate();
 	}
@@ -437,11 +453,10 @@ bool Brzdm::authenticateUser()
 	if (action == Panel::Exit || action == Panel::Console)
 		return true;
 
-	if ( !Brzdm::noPasswdHalt() || !Screen::noPasswdHalt() ) {
+	if ( !Brzdm::noPasswdHalt() || !Screen::noPasswdHalt())
 		Screen::EventHandler( Screen::Get_Passwd );
-	}
 
-	switch(Screen::getAction()){
+	switch (Screen::getAction()) {
 		case Panel::Kiosk:
 			username = _config->get( "kiosk-username" );
 			pw = ::getpwnam( username.c_str() );
@@ -484,8 +499,8 @@ bool Brzdm::authenticateUser()
 			}
 		break;
 		default:
-			std::cout << "Invalid action ...\n";
-			std::cout.flush();
+			std::cerr << "Invalid action ...\n";
+			std::cerr.flush();
 		break;
 	}
 
@@ -497,10 +512,10 @@ bool Brzdm::authenticateUser()
 	}
 
 	if ((panel = _panels->get( "PasswordPanel" )))
-		panel->showText( std::string() );
+		panel->clear();
 
 	if ((panel = _panels->get( "UsernamePanel" )))
-		panel->showText( std::string() );
+		panel->clear();
 
 #ifdef HAVE_SHADOW
 	struct spwd *sp = ::getspnam( pw->pw_name );
@@ -523,6 +538,43 @@ bool Brzdm::authenticateUser()
 }
 
 //-----------------------------------------------------------------------------
+void Brzdm::send_session_id(::pid_t pid, const std::string& cookie)
+//-----------------------------------------------------------------------------
+{
+#ifdef USE_BRZMQ
+	char buffer[1024]={ '\0' };
+
+	::sprintf(
+		buffer,
+		"(map ((app brzdm) (pid %d) (hostname %s) (cookie %s) (key %s)))",
+		getpid(), hostname, cookie.c_str(), cookie.c_str()
+	);
+
+	int mq = ::nn_socket( AF_SP, NN_REQ );
+	if (mq < 0) {
+		::syslog( LOGFLAGS, "BrzMQ -- %s [%s]", ::nn_strerror(nn_errno()), hostname );
+
+	} else if (::nn_connect( mq, "tcp://127.0.0.1:8097" ) < 0) {
+		::syslog( LOGFLAGS, "BrzMQ -- %s [%s]", ::nn_strerror(nn_errno()), hostname );
+
+	} else {
+
+		for (int i=0; i<5; i++) {
+
+			if (::nn_send( mq, buffer, ::strlen(buffer), NN_DONTWAIT ) > 0)
+				break;
+
+			if (errno != EAGAIN) {
+				::syslog( LOGFLAGS, "BrzMQ -- could not send from %s", hostname );
+				break;
+			}
+		}
+		::nn_close( mq );
+	}
+#endif
+}
+
+//-----------------------------------------------------------------------------
 void Brzdm::kiosk()
 //-----------------------------------------------------------------------------
 {
@@ -534,6 +586,8 @@ void Brzdm::login()
 {
 	std::string binpath( _config->get( "paths" ));
 	std::string username( _panels->getName() );
+	std::string cookie( Utils::get_uuid() );
+
 	struct passwd *pw = ::getpwnam( username.c_str() );
 	char* term = ::getenv( "TERM");
 	char hostname[128]={0};
@@ -553,6 +607,7 @@ void Brzdm::login()
 
 	std::string maildir( "/var/mail/" );
 	std::string xauthority( pw->pw_dir );
+	std::string xsession( _panels->getSession() );
 
 	maildir.append( pw->pw_name );
 	xauthority.append( "/.Xauthority" );
@@ -583,6 +638,10 @@ void Brzdm::login()
 		char** child_env;
 		int cnt = 0;
 
+#ifdef USE_BRZMQ
+		send_session_id( pid, cookie );
+#endif
+
 #ifdef USE_CONSOLEKIT2
 		child_env = static_cast<char**>(malloc(sizeof(char*) * 12));
 #else
@@ -602,6 +661,10 @@ void Brzdm::login()
 		child_env[cnt++] = Utils::strcat( "DISPLAY=", _dpy_name );
 		child_env[cnt++] = Utils::strcat( "MAIL=", maildir );
 		child_env[cnt++] = Utils::strcat( "XAUTHORITY=", xauthority );
+		child_env[cnt++] = Utils::strcat( "XSESSION=", xsession.c_str() );
+		child_env[cnt++] = Utils::strcat( "BRZ_SESSION_COOKIE=", cookie.c_str() );
+
+		Utils::strzap( cookie );
 
 #ifdef USE_CONSOLEKIT2
 		child_env[cnt++] = Utils::strcat( "XDG_SESSION_COOKIE=", _ck_session.get_xdg_session_cookie());
@@ -609,23 +672,26 @@ void Brzdm::login()
 
 		child_env[cnt] = 0L;
 
-		for (int i=0; i<cnt; i++) {
-			std::cout << "env[" << i << "]='" << child_env[i] << "'\n";
+		if ( testMode() ) {
+			for (int i=0; i<cnt; i++) {
+				std::cout << "env[" << i << "]='" << child_env[i] << "'\n";
+			}
 		}
 
 		SwitchUser Su( pw, _config, _dpy_name, child_env );
 
+		std::string startcmd( _config->get( "Session/startcmd" ));
 		std::string theme( _config->get( "Session/theme" ));
 		std::string cmd( _config->get( "Session/command" ));
-		std::string session( _panels->getSession() );
 
 		cmd = Utils::strrepl( cmd, "%theme", theme );
-		cmd = Utils::strrepl( cmd, "%session", session );
+		cmd = Utils::strrepl( cmd, "%session", xsession );
 
-		std::string startcmd( _config->get( "Session/startcmd" ));
-
-		std::cout << "Session command '" << cmd << "'\n";
-		std::cout << "Start command '" << startcmd << "'\n";
+		if ( testMode() ) {
+			std::cout << "Session command '" << cmd << "'\n";
+			std::cout << "Start command '" << startcmd << "'\n";
+			std::cout.flush();
+		}
 
 		if ( !startcmd.empty() ) {
 			startcmd = Utils::strrepl( startcmd, USER_VAR, pw->pw_name );
@@ -647,10 +713,12 @@ void Brzdm::login()
 	int status = (0);
 
 	while (wpid != pid) {
+
 		wpid = ::wait( &status );
 
 		if (wpid == Screen::getServerPID()) {
-			std::cout << "Server died, simulate IO error !\n";
+			std::cerr << "Server died, simulate IO error !\n";
+			std::cerr.flush();
 			Brzdm::xioerror( _dpy );
 		}
 	}
@@ -658,6 +726,7 @@ void Brzdm::login()
 	if (WIFEXITED(status) && WEXITSTATUS(status)) {
 		Screen::message( "Failed to execute login command", 3 );
 		::sleep(3);
+		::sync();
 
 	} else {
 		std::string stopcmd( _config->get( "Session/stopcmd" ));
@@ -666,14 +735,14 @@ void Brzdm::login()
 			stopcmd = Utils::strrepl(stopcmd, USER_VAR, pw->pw_name);
 			std::system( stopcmd.c_str() );
 		}
+
 		updateWtmp( pw->pw_name, hostname, false );
 	}
 
 #ifdef USE_CONSOLEKIT2
 	try {
 		_ck_session.close();
-	}
-	catch(Ck::Exception &e) {
+	} catch(Ck::Exception &e) {
 		::syslog( LOGFLAGS, "%s", e.errstr.c_str() );
 	};
 #endif

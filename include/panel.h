@@ -33,7 +33,20 @@ namespace breeze {
 
 class Panel {
 public:
-	enum Type { Pane, Button, Message };
+	enum Type {
+		Pane=0x0001,
+		Button=0x0002,
+		Message=0x0004,
+		Input=0x0008,
+		Background=0x0010,
+
+		TextPane=Pane|0x0100,
+		InputPane=Pane|Input|0x0200,
+		PasswdPane=Pane|Input|0x0400,
+		PhotoPane=Button|0x0800,
+
+		Static=0x1000
+	};
 
 	enum Action {
 		Noop=0,
@@ -53,6 +66,7 @@ protected:
 	Panel::Type _type;
 	Imlib_Image _image;
 	Window _x11win;
+	//Imlib_Updates _updates;
 	//Pixmap _pixmap;
 
 	std::string _cmd;
@@ -65,72 +79,68 @@ protected:
 	RGBA _rgba;
 	RGBA _font_rgba;
 
+	bool _dirty;
 	bool _ondemand;
+	bool _shadow;
 	bool _text_shadow;
 
-	int _text_x;
-	int _text_y;
 	int _w, _h;
 	int _x, _y;
+	int _tx, _ty;
 	int _z_idx;
+
 	Imlib::Alignment _align;
 	Imlib_Text_Direction _rtl;
 
 public:
-	Panel(Panel::Type t=Panel::Pane)
-	{
-		_type = t;
-		_x11win = 0L;
-		_parent = 0L;
-		_rtl = IMLIB_TEXT_TO_RIGHT;
-	}
-	Panel(Panel::Type t, const std::string& n)
-	{
-		_type = t;
-		_name = n;
-		_x11win = 0L;
-		_parent = 0L;
-		_rtl = IMLIB_TEXT_TO_RIGHT;
-	}
-	~Panel() { destroy(); }
+	Panel(Panel::Type t=Panel::Pane);
+	Panel(Panel::Type t, const std::string& n);
+	virtual ~Panel();
 
-	int compare(const Panel& elem) const
-		{
-			int result = zIndex() - elem.zIndex();
-			if (result == 0)
-				return _name.compare( elem._name );
-			return result;
-		}
+public:
+	int compare(const Panel& elem) const;
 
-	bool isa(Panel::Type t) const { return _type == t; }
+	bool dirty() const { return _dirty; }
 	bool onDemand() const { return _ondemand; }
+	bool withShadow() const { return _shadow; }
+	bool isa(Panel::Type mask) const { return mask == (_type & mask); }
 
 	const std::string& spec() const { return _spec; }
 	const std::string& drawmode() const { return _mode; }
 	const std::string& getName() const { return _name; }
+	const std::string& getText() const { return _text; }
 
 	Imlib_Image image() const { return _image; }
 	Window window() const { return _x11win; }
+	//Pixmap pixmap() const { return _pixmap; }
+	Panel *parent() const { return _parent; }
 
 	int x() const { return _x; }
 	int y() const { return _y; }
-	int textX() const { return _text_x; }
-	int textY() const { return _text_y; }
 	int width() const { return _w; }
 	int height() const { return _h; }
 	int zIndex() const { return _z_idx; }
+
+	int textX() const { return _tx; }
+	int textY() const { return _ty; }
+
 	Imlib_Text_Direction direction() const { return _rtl; }
 
 	void setX(int x) { _x = x; }
 	void setY(int y) { _y = y; }
 	void setWidth(int w) { _w = w; }
 	void setHeight(int h) { _h = h; }
-	void setTextX(int x) { _text_x = x; }
-	void setTextY(int y) { _text_y = y; }
 	void setZIndex(int idx) { _z_idx = idx; }
 
+	void setTextX(int x) { _tx = x; }
+	void setTextY(int y) { _ty = y; }
+
+	void setType(Panel::Type t) { _type = t; }
 	void setImage(Imlib_Image img) { _image = img; }
+	//void setPixmap(Pixmap img) { _pixmap = img; }
 	void setParent(Panel *parent) { _parent = parent; }
+
+	void setDirty(bool flag) { _dirty = flag; }
 	void setOnDemand(bool flag) { _ondemand = flag; }
 	void setTextShadow(bool flag) { _text_shadow = flag; }
 
@@ -144,6 +154,9 @@ public:
 		{ Imlib::setRGBA( color, &_font_rgba ); }
 
 public:
+	Window parentWindow() const;
+	Imlib_Image parentImage() const;
+
 	void clear();
 	void create();
 	void destroy();
@@ -152,17 +165,21 @@ public:
 	void showDate();
 	void showClock();
 
-	void showText();
-	void showText(const std::string& text, bool shadow=false);
+	void setStatic(bool);
 
-	void setInput(const std::string& text, bool shadow=false);
-	void setText(const std::string& text, bool shadow, bool windowed=false);
-	void setBackground(const std::string& spec, const std::string& themedir, bool shadow=false);
-	void setButtons(const std::string& img, bool shadow=false);
+	void setValue(const std::string& text);
+	void setText(const std::string& text, bool shadow=false);
+	void showText(const std::string& text);
 
 	void setAlignment(const std::string& spec);
 	void setDirection(const std::string& spec);
 	void setPosition(const std::string& spec, Panel *parent);
+
+	void newButton(const std::string& img, bool shadow=false);
+	void newText(const std::string& text, bool shadow, bool windowed=false);
+	void newInput(const std::string& text, bool shadow=false, bool windowed=false);
+	void newBackground(const std::string& spec, const std::string& themedir,
+		bool shadow=false, bool forcebg=false);
 
 };
 
@@ -180,55 +197,71 @@ public:
 	Panels() { _curidx = 0; }
 	~Panels() { release(); }
 
-	bool load(Config *config);
+	bool load(Config *config, const std::string& bgfile=std::string());
 
 	Panel::Action getAction() const;
 
-	Panel *get(Window wid);
-	Panel *get(int x, int y);
-	Panel *get(const std::string& name, bool dotake=false);
+	Panel *get(Window wid) const;
+	Panel *get(int x, int y) const;
+	Panel *get(const std::string& name) const;
+
+	Imlib_Image getBackground() const;
 
 	void zap();
-	void show();
+	//void show();
+	void release();
+
 	//void clear();
 	//void clear(const std::string& name);
-	void focus(const std::string& name);
+	//void release(const std::string& name);
+	//void focus(const std::string& name);
 
-	void release();
-	void release(const std::string& name);
+	void prevUser();
+	void nextUser();
+	void setUser(int);
 
 	void prevSession();
 	void nextSession();
 	void showSession();
+
 	void resetSession();
+	void setSession(int);
+
+	void reset();
+	void resetUsername();
+	void resetPassword();
 
 	void showClock();
 	void showEnterMesg();
-	void showMessage(const std::string& text);
 
-	void reset();
-	void resetName();
-	void resetPassword();
+	void setUsername(const std::string& name);
+	void setPassword(const std::string& text);
 
-	void setName(const std::string& name);
-	void setPassword(const std::string& pw);
+	void showUsername(const std::string& text);
+	void showPassword(const std::string& text);
 
 	const std::string& getName() const;
+	const std::string& getUser() const;
 	const std::string& getPassword() const;
 	const std::string& getSession() const;
 
 protected:
-	bool scanDesktops(const std::string& folder);
 	bool init(Config *theme);
+	bool scanDesktops(const std::string& folder,
+		const std::vector<std::string>& xpaths);
 
 protected:
 	Panel::Action _action;
 	std::string _namebuf;
 	std::string _password;
 	std::string _hidden_passwd;
+
+	std::vector<std::string> _users;
 	std::vector<std::string> _sessions;
+
 	Config *_themecfg;
-	uint _curidx;
+	int _curidx;
+	int _curuser;
 
 };
 

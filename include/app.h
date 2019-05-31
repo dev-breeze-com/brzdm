@@ -37,13 +37,13 @@ namespace breeze {
 class App {
 public:
 	static bool _force_restart;
-
 	static int IgnoreXIO(Display *dpy);
 
 public:
 	App(int argc, char **argv);
 	virtual ~App();
 
+	bool testMode() const;
 	bool secureMode() const;
 	bool noPasswdHalt() const;
 	bool noPasswdReboot() const;
@@ -60,6 +60,9 @@ public:
 
 protected:
 	void updatePid();
+	void printUsage();
+	void printQRCode();
+
 	void loadTheme(const std::string&);
 	bool authenticateUser(bool focuspass);
 
@@ -73,15 +76,18 @@ protected:
 	Ck::Session _ck_session;
 #endif
 
+	bool _test_mode;
 	bool _secure_mode;
 	bool _first_login;
 	bool _daemon_mode;
 	bool _fork_server;
-	bool _force_nodaemon;
+
 	bool _nopasswd_reboot;
 	bool _nopasswd_shutdown;
 
 	std::string _dpy_name;
+	std::string _bg_file;
+	std::string _background;
 	std::string _kiosk_username;
 
 	const int _mcookiesize;
