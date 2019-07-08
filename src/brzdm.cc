@@ -395,6 +395,7 @@ void Brzdm::run()
 		}
 
 		if ( !authenticateUser() ) {
+			_panels->zap();
 			panelclosed = false;
 			Screen::errmesg( "Wrong username or password !", 3 );
 			Screen::bell( 100 );

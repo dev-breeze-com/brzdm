@@ -988,6 +988,8 @@ void Panels::resetPassword()
 {
 	Utils::strzap( _password );
 	Utils::strzap( _hidden_passwd );
+	_password.clear();
+	_hidden_passwd.clear();
 }
 
 //-----------------------------------------------------------------------------

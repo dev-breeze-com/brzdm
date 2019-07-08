@@ -135,6 +135,8 @@ void Screen::open()
 {
 	setBackground( "Background", _panels->getBackground() );
 
+	_panels->zap();
+
 	if (_config->getBool( "Session/use-default-on-logout" ))
 		_panels->resetSession();
 
