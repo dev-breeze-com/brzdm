@@ -28,7 +28,6 @@ public:
 	static void CatchSignal(int sig);
 	static int xioerror(Display *dpy);
 
-	static char _username[128];
 	static int BRZDM_UID;
 	static int BRZDM_GID;
 	static Brzdm* BRZDM;
@@ -42,8 +41,9 @@ public:
 	void run();
 	void restart();
 
-	void kiosk();
-	void login();
+	int login();
+	int kiosk();
+
 	void reboot();
 	void shutdown();
 	void suspend();

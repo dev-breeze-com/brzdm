@@ -37,9 +37,11 @@ Panel::Panel(Panel::Type t)
 	_image = 0L;
 	_x11win = 0L;
 	_parent = 0L;
+
 	_x = _y = 0;
 	_w = _h = 0;
 	_dirty = false;
+
 	_rtl = IMLIB_TEXT_TO_RIGHT;
 	Imlib::setRGBA( "#00FFFFFF", &_rgba );
 }
@@ -326,10 +328,14 @@ int Panel::compare(const Panel& elem) const
 }
 
 //-----------------------------------------------------------------------------
-void Panel::setValue(const std::string& text)
+void Panel::setValue(const std::string& text, bool dozap)
 //-----------------------------------------------------------------------------
 {
 	Panel *panel = this;
+
+	if ( dozap ) {
+		Utils::strzap( _text );
+	}
 
 	_text = text;
 
@@ -337,8 +343,6 @@ void Panel::setValue(const std::string& text)
 		panel->setDirty( true );
 		panel = panel->parent();
 	}
-#if 0
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -476,8 +480,6 @@ Panel* Panels::get(const std::string& name) const
 //	Panels::iterator it = begin();
 
 	for (const auto& panel: (*this)) {
-//for (; it != end(); it++) {
-//	Panel *panel = (*it);
 		if (name == panel->getName()) {
 //		if ( dotake ) {
 //			Panels::erase( it );
@@ -535,16 +537,34 @@ bool Panels::scanDesktops(const std::string& folder, const std::vector<std::stri
 	DIR *dirp = ::opendir( folder.c_str() );
 	struct dirent *entry = 0L;
 	struct stat statbuf;
-	uint i = 0;
 
 	_sessions.clear();
-	_sessions.push_back( theme );
 
-	if ( !dirp ) { return false; }
+	if ( theme.empty() ) {
+		_sessions.push_back( theme = "xfce" );
+	} else {
+		_sessions.push_back( theme );
+	}
+
+	if ( !dirp ) {
+		std::cerr << "Could not access folder '" << folder << "' !\n";
+		return false;
+	}
 
 	_themecfg->split( sessions, themes, ',' );
 
-	while ((entry = readdir( dirp ))) {
+	if (sessions.size() < 1) {
+		std::cerr << "No entry 'Session/available' found !\n";
+		sessions.push_back( "xfce" );
+		sessions.push_back( "mate" );
+		sessions.push_back( "kde" );
+		sessions.push_back( "lxde" );
+		sessions.push_back( "meawm" );
+	}
+
+	while ((entry = ::readdir( dirp ))) {
+
+		bool found = false;
 
 		if (std::strcmp( entry->d_name, "." ) == 0 ||
 			std::strcmp( entry->d_name, ".." ) == 0)
@@ -555,6 +575,7 @@ bool Panels::scanDesktops(const std::string& folder, const std::vector<std::stri
 		if (std::strstr( entry->d_name, ".desktop~" ))
 			continue;
 
+		std::string lname( entry->d_name );
 		std::string name( entry->d_name );
 		std::string::size_type pos = name.find( ".desktop" );
 
@@ -562,45 +583,87 @@ bool Panels::scanDesktops(const std::string& folder, const std::vector<std::stri
 			continue;
 
 		name.erase( pos, 8 );
+		lname = Utils::strlower( name );
 
-		for (i = 0; i < sessions.size(); i++) {
-			if (name == sessions.at(i)) {
+		for (const auto& session: _sessions) {
+			if (name == session || lname == session) {
+				found = true;
+			}
+		}
+
+		if ( found ) {
+			if (Screen::debugMode())
+				std::cerr << "Already listed in available sessions -- '" << name << "' !\n";
+			continue;
+		}
+
+		found = false;
+
+		for (const auto& session: sessions) {
+			if (name == session || lname == session) {
+				found = true;
 				break;
 			}
 		}
 
-		if (i < sessions.size()) {
+		if ( !found ) {
+			std::cerr << "Not listed in available sessions -- '" << name << "' !\n";
+			continue;
+		}
 
-			std::string lname( Utils::strlower( name ));
+		for (const auto& folder: xpaths) {
 
-			for (const auto& folder: xpaths) {
+			std::string xinit( folder );
+			std::string xinit2( folder );
 
-				std::string xinit( folder );
-				std::string xinit2( folder );
+			if (Screen::debugMode()) {
+				std::cerr << "Checking '" << folder << "' for session '" << name << "' ...\n";
+				std::cerr.flush();
+			}
 
-				if (std::strncmp( folder.c_str(), "/etc/X11/xinit", 14 )) {
-					xinit += "/" + name;
-					xinit2 += "/" + lname;
-				} else {
-					xinit += "/xinitrc." + name;
-					xinit2 += "/xinitrc." + lname;
+			if (std::strstr( folder.c_str(), "/etc/X11/xinit" )) {
+				xinit += "/xinitrc.";
+				xinit2 += "/xinitrc.";
+			} else {
+				xinit += "/";
+				xinit2 += "/";
+			}
+
+			xinit += name;
+			xinit2 += lname;
+
+			if (::lstat( xinit.c_str(), &statbuf )) {
+				if (::lstat( xinit2.c_str(), &statbuf )) {
+					std::cerr << "Could not access session file -- '" << xinit << "' !\n";
+					continue;
 				}
+				xinit = xinit2;
+			}
 
-				if (::lstat( xinit.c_str(), &statbuf )) {
-					if (!::lstat( xinit2.c_str(), &statbuf ))
-						xinit = xinit2;
-				}
+			if (S_ISREG( statbuf.st_mode )) {
 
-				if (S_ISREG( statbuf.st_mode )) {
-					std::cerr << "Found Theme '" << name << " !\n";
-					if (::access( xinit.c_str(), R_OK ) == 0) {
-						::chmod( xinit.c_str(), 0755 );
+				std::string alt1( lname + "-failsafe" );
+				std::string alt2( lname + "-fallback" );
 
-						if (theme != name && theme != lname) {
-							_sessions.push_back( name );
-						}
+				if (name != theme && lname != theme)
+					_sessions.push_back( name );
+
+				if (::chmod( xinit.c_str(), 0755 ))
+					std::cerr << "Could not chmod session file -- '" << xinit << "' !\n";
+
+				if (Screen::debugMode())
+					std::cerr << ">>>> Added '" << name << "' as an available session !\n";
+
+				for (const auto& session: sessions) {
+					if (session == alt1 || session == alt2) {
+						_sessions.push_back( alt1 );
+						break;
 					}
 				}
+
+				break;
+			} else {
+				std::cerr << "Session file is not a regular file -- '" << xinit << "' !\n";
 			}
 		}
 	}
@@ -622,6 +685,11 @@ bool Panels::load(Config *config, const std::string& bgfile)
 	_themecfg = config;
 	_themecfg->get( "Defaults/", defaults, true );
 	_themecfg->splitKey( xpaths, "xpaths", ':' );
+
+	if (xpaths.size() < 1) {
+		xpaths.push_back( "/etc/X11/xinit/" );
+		xpaths.push_back( "/etc/X11/Sessions/" );
+	}
 
 	if (! scanDesktops( "/usr/share/xsessions/", xpaths ))
 		return false;
@@ -909,6 +977,10 @@ void Panels::setSession(int step)
 		_curidx = nb_sessions-1;
 	}
 
+	if (Screen::debugMode()) {
+		std::cerr << "CURRENT SESSION[" << _curidx << "]=" << getSession() << " !\n";
+	}
+
 	if ( panel ) {
 		std::string text( _themecfg->get( "SessionPanel/text" ));
 		text = Utils::strrepl( text, "%session", getSession() );
@@ -943,8 +1015,12 @@ void Panels::setUser(int step)
 		_curuser = nb_users-1;
 	}
 
+	if (Screen::debugMode()) {
+		std::cerr << "CURRENT USER[" << _curuser << "]=" << getUser() << " !\n";
+	}
+
 	if ( panel ) {
-		std::string user( _users.at( _curuser ));
+		std::string user( getUser() );
 		Config entries;
 
 		if (_themecfg->get( user, entries, true )) {
@@ -979,17 +1055,33 @@ void Panels::reset()
 void Panels::resetUsername()
 //-----------------------------------------------------------------------------
 {
-	_namebuf.clear();
+	Panel *panel = get( "InputPanel" );
+
+	if ( !panel )
+		panel = get( "UsernamePanel" );
+
+	if ( panel ) {
+		panel->setValue( std::string(), true );
+	}
+
+	Utils::strzap( _namebuf );
 }
 
 //-----------------------------------------------------------------------------
 void Panels::resetPassword()
 //-----------------------------------------------------------------------------
 {
+	Panel *panel = get( "InputPanel" );
+
+	if ( !panel )
+		panel = get( "PasswordPanel" );
+
+	if ( panel ) {
+		panel->setValue( std::string(), true );
+	}
+
 	Utils::strzap( _password );
 	Utils::strzap( _hidden_passwd );
-	_password.clear();
-	_hidden_passwd.clear();
 }
 
 //-----------------------------------------------------------------------------

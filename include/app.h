@@ -44,6 +44,7 @@ public:
 	virtual ~App();
 
 	bool testMode() const;
+	bool debugMode() const;
 	bool secureMode() const;
 	bool noPasswdHalt() const;
 	bool noPasswdReboot() const;
@@ -77,6 +78,7 @@ protected:
 #endif
 
 	bool _test_mode;
+	bool _debug_mode;
 	bool _secure_mode;
 	bool _first_login;
 	bool _daemon_mode;

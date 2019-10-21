@@ -82,7 +82,9 @@ public:
 
 	static void blank();
 	static void showText();
+
 	static void setTestMode(bool);
+	static void setDebugMode(bool);
 
 	static void destroy(Window wid);
 	static void clear(Window wid=0);
@@ -136,6 +138,7 @@ public:
 	static int getServerPID();
 
 	static bool testMode();
+	static bool debugMode();
 	static bool noPasswdHalt();
 	static bool isServerStarted();
 	static bool session(SessionType);
@@ -187,6 +190,7 @@ private:
 	static int _server_started;
 
 	static bool _test_mode;
+	static bool _debug_mode;
 	static bool _nopasswd_halt;
 	/*
 	GC TextGC;

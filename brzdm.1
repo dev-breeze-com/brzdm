@@ -21,6 +21,11 @@ Brzdm selects desktop sessions using \fI/usr/share/xsessions\fP, \fI/etc/X11/xin
 Run as a daemon.
 .TP
 
+.B
+\fB-n\fP
+Do not run as a daemon.
+.TP
+
 \fB-B\fP
 Use specified background to override the theme's default.
 .TP
@@ -76,11 +81,11 @@ Please refer to your Operating System documentation, to make \fBbrzdm\fP
 automatically startup after the system boots.
 For installations with \fBbrzctl\fP as the \fBrc.d or init.d service manager\fP; issue the following commands:
 .IP
-brzctl enable displaymgr brzdm
+brzctl enable xdm brzdm
 .IP
-brzctl set displaymgr desktop <xfce, mate, kde, etc.>
+brzctl set xdm desktop <xfce, mate, kde, etc.>
 .IP
-brzctl start displaymgr
+brzctl start xdm
 .IP
 .PP
 For installations with \fBopenrc\fP as the \fBinit.d service manager\fP; issue the following commands:

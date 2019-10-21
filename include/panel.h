@@ -167,7 +167,7 @@ public:
 
 	void setStatic(bool);
 
-	void setValue(const std::string& text);
+	void setValue(const std::string& text, bool dozap=false);
 	void setText(const std::string& text, bool shadow=false);
 	void showText(const std::string& text);
 

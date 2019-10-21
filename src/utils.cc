@@ -207,6 +207,7 @@ bool Utils::add_mcookie(const std::string &mcookie, const std::string& display,
 		fprintf(fptr, "remove %s\n", display.c_str());
 		fprintf(fptr, "add %s %s %s\n", display.c_str(), ".", mcookie.c_str());
 		fprintf(fptr, "exit\n");
+		::sync();
 		::pclose(fptr);
 	}
 
@@ -246,13 +247,18 @@ std::string Utils::strrepl(const std::string& text, const std::string& pattern, 
 //-----------------------------------------------------------------------------
 {
 	std::string::size_type pos = 0;
-	std::string s( text );
-	int len = pattern.size();
 
-	while ((pos = s.find(pattern, pos)) != std::string::npos)
-		s = s.substr( 0, pos ) + replstr + s.substr( pos+len );
+	if ( !text.empty()) {
+		std::string s( text );
+		int len = pattern.size();
 
-	return s;
+		while ((pos = s.find(pattern, pos)) != std::string::npos)
+			s = s.substr( 0, pos ) + replstr + s.substr( pos+len );
+
+		return s;
+	}
+
+	return text;
 }
 
 //-----------------------------------------------------------------------------

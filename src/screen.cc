@@ -46,6 +46,7 @@ int Screen::_server_pid = 0;
 int Screen::_server_started = false;
 
 bool Screen::_test_mode = false;
+bool Screen::_debug_mode = false;
 bool Screen::_nopasswd_halt = false;
 
 //-----------------------------------------------------------------------------
@@ -199,7 +200,15 @@ bool Screen::testMode() { return _test_mode; }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+bool Screen::debugMode() { return _debug_mode; }
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 void Screen::setTestMode(bool flag) { _test_mode = flag; }
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void Screen::setDebugMode(bool flag) { _debug_mode = flag; }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -458,7 +467,9 @@ std::cerr.flush();
 						}
 					break;
 					case KeyPress:
-						loop = onKeyPress( event );
+std::cerr << "X server KeyPress event.\n";
+std::cerr.flush();
+					loop = onKeyPress( event );
 					break;
 					default:
 					break;
@@ -762,7 +773,7 @@ void Screen::stopServer(Panel::Action action)
 		::alarm( 15 );
 	}
 
-	switch( action ) {
+	switch ( action ) {
 		case Panel::Reboot:
 		case Panel::Shutdown:
 		case Panel::Suspend:
@@ -819,7 +830,7 @@ void Screen::stopServer(Panel::Action action)
 		return;
 	}
 
-	if ( testMode() ) {
+	if (testMode() || debugMode()) {
 		std::cerr << "X server slow to shut down, sending KILL signal.\n";
 		std::cerr.flush();
 	}
@@ -852,7 +863,7 @@ int Screen::timeout(int delay, char* text)
 			break;
 
 		if ( delay ) {
-			if ( testMode() ) {
+			if (testMode() || debugMode()) {
 				std::cerr << "brzdm: waiting for " << text << "\n";
 			}
 			::sleep(1);
@@ -862,6 +873,7 @@ int Screen::timeout(int delay, char* text)
 			break;
 		}
 	}
+
 	return getServerPID() != pid;
 }
 
@@ -948,7 +960,7 @@ int Screen::startServer(bool daemon_mode, bool fork_server)
 		createCursors();
 		selectInput( true );
 
-		if ( testMode() ) {
+		if (testMode() || debugMode()) {
 			std::cerr << "Opened dpy '" << _dpy_name.c_str() <<  "' -- " << strerror(errno) << "\n";
 			std::cerr << "Screen " << _screen_w << "x" << _screen_h << "+0+0\n";
 			std::cerr.flush();
@@ -1011,7 +1023,7 @@ int Screen::forkServer(bool daemon_mode)
 
 	server[argc] = 0L;
 
-	if ( testMode() ) {
+	if (testMode() || debugMode()) {
 		for (int i=0; i < argc; i++)
 			std::cerr << "X11/Xorg Arg[" << i << "]='" << server[i] << "'\n";
 	}

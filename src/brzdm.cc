@@ -54,8 +54,6 @@
 
 namespace breeze {
 
-char Brzdm::_username[128]={0};
-
 int Brzdm::BRZDM_UID = (0);
 int Brzdm::BRZDM_GID = (0);
 
@@ -112,37 +110,34 @@ bool Brzdm::doSetuid(uid_t uid, gid_t gid)
 	errno = 0;
 
 #ifdef _POSIX_SAVED_IDS
-	if (seteuid( 0 ) == 0)
-		success = setegid( gid ) == 0 && seteuid( uid ) == 0;
+	if (::seteuid( 0 ) == 0)
+		success = ::setegid( gid ) == 0 && ::seteuid( uid ) == 0;
 #else
-	success = setreuid( real_uid, uid ) == 0;
+	success = ::setreuid( real_uid, uid ) == 0;
 	//(void) setregid( BRZDM_UID, BRZDM_GID );
 #endif
 
-fprintf( stderr, "brzdm: doSetuid EUID=%d EGID=%d '%s'\n",
-	geteuid(), getegid(), strerror( errno ));
-fflush( stderr );
+	if (testMode() || debugMode()) {
+		fprintf( stderr, "brzdm: doSetuid EUID=%d EGID=%d '%s'\n",
+			::geteuid(), ::getegid(), ::strerror( errno ));
+		fflush( stderr );
+	}
 
 	return success;
 }
 
 //-----------------------------------------------------------------------------
-bool Brzdm::doSetuid(const std::string& user)
+bool Brzdm::doSetuid(const std::string& username)
 //-----------------------------------------------------------------------------
 {
-	struct passwd *pwbuf = 0L;
-	bool success = false;
+	struct passwd *pwbuf = ::getpwnam( username.c_str() );
+	bool success = pwbuf && doSetuid( pwbuf->pw_uid, pwbuf->pw_gid );
 
-	(void) strcpy( _username, user.c_str() );
-
-	errno = 0;
-
-	if ((pwbuf = getpwnam( _username )))
-		success = doSetuid( pwbuf->pw_uid, pwbuf->pw_gid );
-
-fprintf( stderr, "brzdm: setUID EUID=%d EGID=%d '%s'\n",
-	geteuid(), getegid(), strerror( errno ));
-fflush( stderr );
+	if (testMode() || debugMode()) {
+		fprintf( stderr, "brzdm: setUID EUID=%d EGID=%d '%s'\n",
+			::geteuid(), ::getegid(), ::strerror( errno ));
+		fflush( stderr );
+	}
 
 	return success;
 }
@@ -159,14 +154,16 @@ bool Brzdm::setGroups(const std::string& username)
 	errno = 0;
 	doSetuid( 0, 0 );
 
-	if (getgrouplist( username.c_str(), gid, groups, &ngroups ) > 0) {
-		setgroups( ngroups, groups );
+	if (::getgrouplist( username.c_str(), gid, groups, &ngroups ) > 0) {
+		::setgroups( ngroups, groups );
 
-		for (i = 0; i < ngroups; i++)
-			fprintf( stderr, "brzdm: GROUP[%d]=%d\n", i, groups[i] );
+		if (testMode() || debugMode()) {
+			for (i = 0; i < ngroups; i++)
+				fprintf( stderr, "brzdm: GROUP[%d]=%d\n", i, groups[i] );
 
-		fprintf( stderr, "brzdm: errno '%s'\n", strerror( errno ));
-		fflush( stderr );
+			fprintf( stderr, "brzdm: errno '%s'\n", ::strerror( errno ));
+			fflush( stderr );
+		}
 	}
 
 	delete [] groups;
@@ -280,11 +277,16 @@ Brzdm::Brzdm(int argc, char **argv) : App( argc, argv )
 		for (const auto& tuple: envvars) {
 			std::string key( tuple.first );
 			std::string val( tuple.second ); 
-			setenv( key.c_str(), val.c_str(), true );
+
+			if ( !key.empty() && val.length() < 256) {
+				if (key.find( "HOME" ) == std::string::npos) {
+					setenv( key.c_str(), val.c_str(), true );
+				}
+			}
 		}
 	}
 
-	setLocale( _config->get( "locale" ));
+	//setLocale( _config->get( "locale" ));
 
 #if defined( USE_KEYUTILS )
 	if ( _secure_mode ) {
@@ -333,7 +335,7 @@ void Brzdm::run()
 
 	Screen::init( _config, _panels, _dpy_name );
 
-	if ( testMode() ) {
+	if (testMode()) {
 		Screen::startServer( false, false );
 
 	} else {
@@ -362,7 +364,7 @@ void Brzdm::run()
 	Imlib::init( _dpy, _config );
 
 	if (! _panels->load( _config, _bg_file )) {
-		if ( testMode() ) {
+		if (testMode() || debugMode()) {
 			std::fprintf( stdout, "Could not load panels !\n" );
 		}
 
@@ -382,7 +384,6 @@ void Brzdm::run()
 	while ( true ) {
 
 		if ( panelclosed ) {
-
 			Screen::open();
 
 			if ( firsttime ) {
@@ -391,6 +392,7 @@ void Brzdm::run()
 				std::string mesg( _config->get( "welcome" ));
 				mesg = Utils::strrepl( mesg, "%host", hostname );
 				Screen::message( mesg, 3 );
+				firsttime = false;
 			}
 		}
 
@@ -399,22 +401,22 @@ void Brzdm::run()
 			panelclosed = false;
 			Screen::errmesg( "Wrong username or password !", 3 );
 			Screen::bell( 100 );
+			::sync(); ::sleep(1);
 			continue;
 		}
 
 		firsttime = false;
 		action = Screen::getAction();
 		panelclosed = true;
-
 		Screen::close( action );
 
 		switch ( action ) {
 			case Panel::Kiosk:
 				Brzdm::kiosk();
-				break;
+			break;
 			case Panel::Login:
 				Brzdm::login();
-				break;
+			break;
 #if 0
 			case Panel::Console:
 				Brzdm::console();
@@ -422,18 +424,18 @@ void Brzdm::run()
 #endif
 			case Panel::Reboot:
 				Brzdm::reboot();
-				break;
+			break;
 			case Panel::Shutdown:
 				Brzdm::shutdown();
-				break;
+			break;
 			case Panel::Suspend:
 				Brzdm::suspend();
-				break;
+			break;
 			case Panel::Exit:
 				Brzdm::terminate();
-				break;
+			break;
 			default:
-				break;
+			break;
 		}
 	}
 }
@@ -532,8 +534,8 @@ bool Brzdm::authenticateUser()
 	username = _panels->getPassword();
 	encrypted = ::crypt( username.c_str(), correct );
 
-	//std::cout << "Password '" << correct << "' '" << encrypted << "'\n";
-	//std::cout.flush();
+	//std::cerr << "Password '" << correct << "' '" << encrypted << "'\n";
+	//std::cerr.flush();
 
 	return std::strcmp( encrypted, correct ) == 0;
 }
@@ -576,29 +578,60 @@ void Brzdm::send_session_id(::pid_t pid, const std::string& cookie)
 }
 
 //-----------------------------------------------------------------------------
-void Brzdm::kiosk()
+int Brzdm::kiosk()
 //-----------------------------------------------------------------------------
 {
+	return (-1);
+	//return login();
 }
 
 //-----------------------------------------------------------------------------
-void Brzdm::login()
+int Brzdm::login()
 //-----------------------------------------------------------------------------
 {
+	std::string sesscmd( _config->get( "Session/command" ));
+	std::string theme( _config->get( "Session/theme" ));
 	std::string binpath( _config->get( "paths" ));
+	std::string xsession( _panels->getSession() );
 	std::string username( _panels->getName() );
 	std::string cookie( Utils::get_uuid() );
+	std::string xterm( "xterm" );
+	std::time_t now = time(0);
+	int session_sid = (-1);
+
+	bool session_detached = _config->getBool( xsession + "/detached" );
+	bool detached = _config->getBool( "Session/detached" );
+	bool use_consolekit = true;
 
 	struct passwd *pw = ::getpwnam( username.c_str() );
-	char* term = ::getenv( "TERM");
+	char* shellterm = ::getenv( "TERM" );
 	char hostname[128]={0};
+	int status = (0);
 
 	::endpwent();
 
 	if ( !pw ) {
 		::syslog( LOGFLAGS, "Invalid username '%s'", username.c_str() );
-		return;
+		Screen::message( "Invalid username !", 3 );
+		::sync(); ::sleep(1);
+		return (-2);
 	}
+
+	if ( sesscmd.empty() ) {
+		::syslog( LOGFLAGS, "Session command missing !" );
+		Screen::message( "Session command missing !", 3 );
+		::sync(); ::sleep(1);
+		return (-2);
+	}
+
+	if ( xsession.empty() ) {
+		::syslog( LOGFLAGS, "Desktop session cannot be null !" );
+		Screen::message( "Desktop session cannot be null !", 3 );
+		::sync(); ::sleep(1);
+		return (-2);
+	}
+
+	if ( !shellterm ) { xterm = shellterm; }
 
 	if (pw->pw_shell[0] == '\0') {
 		setusershell();
@@ -606,25 +639,58 @@ void Brzdm::login()
 		endusershell();
 	}
 
+	if (testMode() || debugMode())
+		std::cerr << "Desktop session to '" << xsession << "' !\n";
+
+	std::string::size_type offset = xsession.find( "-failsafe" );
+
+	if (offset == std::string::npos)
+		offset = xsession.find( "-fallback" );
+
+	if (offset != std::string::npos) {
+		xsession.erase( offset, 9 );
+		use_consolekit = _config->getBool( xsession + "/consolekit" );
+		session_detached = _config->getBool( xsession + "/detached" );
+		sesscmd = _config->get( xsession + "/command" );
+		::chmod( sesscmd.c_str(), 0755 );
+	}
+
+	if (testMode() || debugMode()) {
+		std::cerr << "Desktop session detached=" << (detached ? "yes" : "no") << " !\n";
+		std::cerr << "Desktop session command '" << sesscmd << "' !\n";
+		std::cerr.flush();
+	}
+
 	std::string maildir( "/var/mail/" );
 	std::string xauthority( pw->pw_dir );
-	std::string xsession( _panels->getSession() );
 
-	maildir.append( pw->pw_name );
+	maildir.append( username );
 	xauthority.append( "/.Xauthority" );
 
 #ifdef USE_CONSOLEKIT2
-	std::cout << "Launching a ConsoleKit session ...\n";
-	std::cout.flush();
+	if ( use_consolekit ) {
+		if (testMode() || debugMode()) {
+			std::cerr << "Launching a ConsoleKit session ...\n";
+			std::cerr.flush();
+		}
 
-	try {
-		_ck_session.open( Ck::Session::X11, _dpy_name, pw->pw_uid );
-	}
-	catch(Ck::Exception &e) {
-		::syslog( LOGFLAGS, "ConsoleKit2 %s", e.errstr.c_str() );
-		Screen::message( "Failed to launch a ConsoleKit session !", 3 );
-		_panels->zap();
-		return;
+		try {
+			_ck_session.open( Ck::Session::X11, _dpy_name, pw->pw_uid );
+
+		} catch(Ck::Exception &e) {
+
+			::syslog( LOGFLAGS, "ConsoleKit2 %s", e.errstr.c_str() );
+			Screen::message( "Failed to launch a ConsoleKit session !", 3 );
+
+			if (testMode() || debugMode()) {
+				std::cerr << "Failed to launch a ConsoleKit session !\n";
+				std::cerr.flush();
+			}
+
+			_panels->zap();
+			::sync(); ::sleep(1);
+			return (-2);
+		}
 	}
 #endif
 
@@ -635,7 +701,6 @@ void Brzdm::login()
 	::pid_t pid = fork();
 
 	if (pid == 0) {
-
 		char** child_env;
 		int cnt = 0;
 
@@ -644,108 +709,155 @@ void Brzdm::login()
 #endif
 
 #ifdef USE_CONSOLEKIT2
-		child_env = static_cast<char**>(malloc(sizeof(char*) * 12));
+		if ( use_consolekit ) {
+			child_env = static_cast<char**>(malloc(sizeof(char*) * 14));
+		} else {
+			child_env = static_cast<char**>(malloc(sizeof(char*) * 13));
+		}
 #else
-		child_env = static_cast<char**>(malloc(sizeof(char*) * 11));
+		child_env = static_cast<char**>(malloc(sizeof(char*) * 13));
 #endif
 
-		if ( term ) {
-			child_env[cnt++] = Utils::strcat( "TERM=", term );
-		}
-
+		child_env[cnt++] = Utils::strcat( "TERM=", xterm.c_str() );
 		child_env[cnt++] = Utils::strcat( "HOME=", pw->pw_dir );
 		child_env[cnt++] = Utils::strcat( "PWD=", pw->pw_dir );
 		child_env[cnt++] = Utils::strcat( "SHELL=", pw->pw_shell );
-		child_env[cnt++] = Utils::strcat( "USER=", pw->pw_name );
-		child_env[cnt++] = Utils::strcat( "LOGNAME=", pw->pw_name );
+		child_env[cnt++] = Utils::strcat( "USER=", username );
+		child_env[cnt++] = Utils::strcat( "LOGNAME=", username );
 		child_env[cnt++] = Utils::strcat( "PATH=", binpath );
 		child_env[cnt++] = Utils::strcat( "DISPLAY=", _dpy_name );
 		child_env[cnt++] = Utils::strcat( "MAIL=", maildir );
 		child_env[cnt++] = Utils::strcat( "XAUTHORITY=", xauthority );
 		child_env[cnt++] = Utils::strcat( "XSESSION=", xsession.c_str() );
-		child_env[cnt++] = Utils::strcat( "BRZ_SESSION_COOKIE=", cookie.c_str() );
 
 		Utils::strzap( cookie );
 
 #ifdef USE_CONSOLEKIT2
-		child_env[cnt++] = Utils::strcat( "XDG_SESSION_COOKIE=", _ck_session.get_xdg_session_cookie());
+		if ( use_consolekit ) {
+			child_env[cnt++] = Utils::strcat
+				( "XDG_SESSION_COOKIE=", _ck_session.get_xdg_session_cookie());
+		}
 #endif
 
+		child_env[cnt++] = Utils::strcat( "BRZ_SESSION_COOKIE=", cookie.c_str() );
 		child_env[cnt] = 0L;
 
-		if ( testMode() ) {
-			for (int i=0; i<cnt; i++) {
-				std::cout << "env[" << i << "]='" << child_env[i] << "'\n";
+		if (testMode() || debugMode()) {
+			for (int i=0; i < cnt; i++) {
+				std::cerr << "ENV[" << i << "]='" << child_env[i] << "'\n";
 			}
 		}
 
 		SwitchUser Su( pw, _config, _dpy_name, child_env );
 
-		std::string startcmd( _config->get( "Session/startcmd" ));
-		std::string theme( _config->get( "Session/theme" ));
-		std::string cmd( _config->get( "Session/command" ));
+		sesscmd = Utils::strrepl( sesscmd, "%theme", theme );
+		sesscmd = Utils::strrepl( sesscmd, "%session", xsession );
 
-		cmd = Utils::strrepl( cmd, "%theme", theme );
-		cmd = Utils::strrepl( cmd, "%session", xsession );
-
-		if ( testMode() ) {
-			std::cout << "Session command '" << cmd << "'\n";
-			std::cout << "Start command '" << startcmd << "'\n";
-			std::cout.flush();
+		if (testMode() || debugMode()) {
+			std::cerr << "Session command = '" << sesscmd << "'\n";
+			std::cerr.flush();
 		}
 
-		if ( !startcmd.empty() ) {
-			startcmd = Utils::strrepl( startcmd, USER_VAR, pw->pw_name );
-			std::system( startcmd.c_str() );
+#ifdef USE_START_CMD
+		if (_config->getBool( "Start/enabled" )) {
+			std::string command( _config->get( "Start/command" ));
+
+			if ( !command.empty() ) {
+				if (command[0] == '/') {
+					command = Utils::strrepl( command, USER_VAR, username );
+					std::system( command.c_str() );
+					::sync();
+
+					if (testMode() || debugMode()) {
+						std::cerr << "Start command = '" << command << "'\n";
+						std::cerr.flush();
+					}
+				} else {
+					std::cerr << "Start command must start with '/' !\n";
+					std::cerr.flush();
+				}
+			}
+		}
+#endif
+
+		updateWtmp( username, hostname, true );
+
+		if (testMode() || debugMode()) {
+			std::cerr << "Executing " << sesscmd << " as " << username << "\n";
+			std::cerr.flush();
 		}
 
-		updateWtmp( pw->pw_name, hostname, true );
+		::syslog( LOGFLAGS, "Executing %s as %s", sesscmd.c_str(), username.c_str() );
 
-		::syslog( LOGFLAGS, "%s", cmd.c_str() );
+		if (detached || session_detached) {
+			//session_sid = ::setsid();
+		}
 
-		Su.Login( cmd, _mcookie );
+		Su.Login( sesscmd, _mcookie );
 
 		_exit(OK_EXIT);
 	}
 
 	// Wait until user is logging out (login process terminates)
-	::pid_t wpid = (-1);
-
-	int status = (0);
-
-	while (wpid != pid) {
-
-		wpid = ::wait( &status );
+	while (true) {
+		::pid_t wpid = ::wait( &status );
 
 		if (wpid == Screen::getServerPID()) {
 			std::cerr << "Server died, simulate IO error !\n";
 			std::cerr.flush();
 			Brzdm::xioerror( _dpy );
 		}
+
+		if (wpid == pid)
+			break;
+
+		if (session_sid > 0 && wpid == session_sid) {
+			break;
+		}
 	}
 
-	if (WIFEXITED(status) && WEXITSTATUS(status)) {
-		Screen::message( "Failed to execute login command", 3 );
-		::sleep(3);
-		::sync();
+	std::time_t elapsed = time(0) - now;
 
-	} else {
-		std::string stopcmd( _config->get( "Session/stopcmd" ));
-
-		if ( !stopcmd.empty() ) {
-			stopcmd = Utils::strrepl(stopcmd, USER_VAR, pw->pw_name);
-			std::system( stopcmd.c_str() );
+	if (WIFEXITED(status) && WEXITSTATUS(status) && elapsed < 10) {
+		if (testMode() || debugMode()) {
+			std::cerr << "Failed status " << status << " " << WEXITSTATUS(status) << "\n";
+			std::cerr.flush();
 		}
 
-		updateWtmp( pw->pw_name, hostname, false );
+		::syslog( LOGFLAGS, "Login failed -- %s", sesscmd.c_str() );
+		Screen::message( "Failed to execute login command", 3 );
+		::sync(); ::sleep(1);
+		status = (-1);
+
+	} else {
+#ifdef USE_STOP_CMD
+		if (_config->getBool( "Stop/enabled" )) {
+			std::string command( _config->get( "Stop/command" ));
+
+			if (!command.empty()) {
+				if (command[0] == '/') {
+					command = Utils::strrepl( command, USER_VAR, username );
+					std::system( command.c_str() );
+					::sync();
+				} else {
+					std::cerr << "Stop command must start with '/' !\n";
+					std::cerr.flush();
+				}
+			}
+		}
+#endif
+		updateWtmp( username, hostname, false );
+		status = 0;
 	}
 
 #ifdef USE_CONSOLEKIT2
-	try {
-		_ck_session.close();
-	} catch(Ck::Exception &e) {
-		::syslog( LOGFLAGS, "%s", e.errstr.c_str() );
-	};
+	if ( use_consolekit ) {
+		try {
+			_ck_session.close();
+		} catch(Ck::Exception &e) {
+			::syslog( LOGFLAGS, "%s", e.errstr.c_str() );
+		};
+	}
 #endif
 
 	Screen::killAllClients( false );
@@ -755,10 +867,11 @@ void Brzdm::login()
 	::killpg( pid, SIGHUP );
 
 	// Send TERM or KILL signal to clientgroup
-	if(::killpg( pid, SIGTERM ))
+	if (::killpg( pid, SIGTERM ))
 		::killpg( pid, SIGKILL );
 
 	BRZDM->restart();
+	return status;
 }
 
 //-----------------------------------------------------------------------------
