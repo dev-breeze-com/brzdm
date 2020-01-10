@@ -37,6 +37,7 @@ INTRODUCTION
    - Keyutils support (planned)
    - User Photo Panel support (planned)
    - Secure auto-login support (planned)
+   - ELogind support (planned)
 
 
 PREREQUISITES
@@ -50,8 +51,11 @@ PREREQUISITES
   * Xorg/X11 libraries
   * Imlib2 image library
   * Freetype font library
+  * ConsoleKit2 library
   * Nettle encryption library
   * Keyutils keyring library (Upcoming version)
+  * ELogind library (Upcoming version)
+  
 
 
 USAGE
